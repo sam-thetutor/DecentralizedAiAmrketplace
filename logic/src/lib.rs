@@ -136,6 +136,8 @@ pub struct VoteRequest {
 pub enum Action {
     TransferFunds(TransferFundsAction),
     NoAction(),
+    ChangeNumberOfApproval,
+    CallExternalContract,
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
