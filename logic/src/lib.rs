@@ -162,20 +162,7 @@ impl AppState {
         AppState::default()
     }
 
-    //Proposals
-    pub fn get_proposals(request: GetProposalsRequest) -> Vec<Proposal> {
-        vec![]
-    }
-    pub fn get_num_of_proposals(proposal_id: String) -> u16 {
-        0
-    }
-    pub fn get_proposal_details(proposal_id: String) -> Proposal {
-        Proposal::default()
-    }
     pub fn create_new_proposal(request: CreateProposalRequest) -> bool {
-        true
-    }
-    pub fn vote_for_proposal(request: VoteRequest) -> bool {
         true
     }
 
@@ -189,6 +176,21 @@ impl AppState {
 }
 
 // Frontend
+
+//Proposals
+//     pub fn get_proposals(request: GetProposalsRequest) -> Vec<Proposal> {
+//         vec![]
+//     }
+//     pub fn get_num_of_proposals(proposal_id: String) -> u16 {
+//         0
+//     }
+//     pub fn get_proposal_details(proposal_id: String) -> Proposal {
+//         Proposal::default()
+//     }
+// pub fn vote_for_proposal(request: VoteRequest) -> bool {
+//     true
+// }
+
 // pub fn get_context_details()->ContextDetails{
 //     ContextDetails::default()
 // }
