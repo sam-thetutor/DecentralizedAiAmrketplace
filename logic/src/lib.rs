@@ -30,6 +30,7 @@ pub struct Proposal {
     start_date: Option<u64>,
     end_date: Option<u64>,
     vote: Option<Vote>,
+    action: Action,
 }
 
 impl Proposal {
@@ -128,6 +129,30 @@ pub struct CreateProposalRequest {
 pub struct VoteRequest {
     proposal_id: String,
     vote_type: VoteType,
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+#[borsh(crate = "calimero_sdk::borsh")]
+pub enum Action {
+    TransferFunds(TransferFundsAction),
+    NoAction(),
+}
+
+#[derive(BorshDeserialize, BorshSerialize)]
+#[borsh(crate = "calimero_sdk::borsh")]
+pub struct TransferFundsAction {
+    title: String,
+    description: String,
+    amount: u16,
+    destination_account: String,
+    source_account: String,
+    chain: String,
+}
+
+impl Default for Action {
+    fn default() -> Self {
+        Action::NoAction()
+    }
 }
 
 #[app::logic]
