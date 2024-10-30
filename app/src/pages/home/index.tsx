@@ -16,6 +16,7 @@ import {
 } from '../../api/dataSource/ClientApiDataSource';
 import {
   GetCountResponse,
+  GetProposalMessagesRequest,
   IncreaseCountRequest,
   IncreaseCountResponse,
   ResetCounterResponse,
@@ -102,47 +103,55 @@ export default function HomePage() {
     }
   }, [accessToken, applicationId, navigate, refreshToken, url]);
 
-  async function increaseCounter() {
-    const params: IncreaseCountRequest = {
-      count: 1,
+  async function fetchProposalMessages(proposalId: String) {
+    const params: GetProposalMessagesRequest = {
+      proposalId,
     };
     const result: ResponseData<IncreaseCountResponse> =
-      await new ClientApiDataSource().increaseCount(params);
+      await new ClientApiDataSource().getProposalMessages(params);
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
       return;
     }
-    await getCount();
+    //TODO implement this function
   }
 
-  async function getCount() {
-    const result: ResponseData<GetCountResponse> =
-      await new ClientApiDataSource().getCount();
-    if (result?.error) {
-      console.error('Error:', result.error);
-      window.alert(`${result.error.message}`);
-      return;
-    }
-    if (result.data.count || result.data.count === 0) {
-      setCount(Number(result.data.count));
-    }
+  async function sendProposalMessage(proposalId: string, message: string) {
+    //TODO implement this function
   }
 
-  async function resetCount() {
-    const result: ResponseData<ResetCounterResponse> =
-      await new ClientApiDataSource().reset();
-    if (result?.error) {
-      console.error('Error:', result.error);
-      window.alert(`${result.error.message}`);
-      return;
-    }
-    await getCount();
+  async function createProposal() {
+    //TODO implement this function
   }
 
-  useEffect(() => {
-    getCount();
-  }, []);
+  async function getAllProposals() {
+    //TODO implement this function
+  }
+
+  async function getProposalDetails() {
+    //TODO implement this function
+  }
+
+  async function getNumOfProposals() {
+    //TODO implement this function
+  }
+
+  async function voteForProposal() {
+    //TODO implement this function
+  }
+
+  async function getContextDetails() {
+    //TODO implement this function
+  }
+
+  async function getContextMembers() {
+    //TODO implement this function
+  }
+
+  async function getContextMembersCount() {
+    //TODO implement this function
+  }
 
   const observeNodeEvents = async () => {
     let subscriptionsClient: SubscriptionsClient = getWsSubscriptionsClient();
@@ -179,8 +188,16 @@ export default function HomePage() {
 
       <StatusTitle> Current count is:</StatusTitle>
       <StatusValue> {count ?? '-'}</StatusValue>
-      <Button onClick={increaseCounter}> + 1</Button>
-      <ButtonReset onClick={resetCount}> Reset</ButtonReset>
+      <Button
+        onClick={(e) => {
+          fetchProposalMessages('1');
+        }}
+      >
+        {' '}
+        Fetch proposal messages
+      </Button>
+      <ButtonReset onClick={createProposal}> Create new proposals</ButtonReset>
+      <ButtonReset onClick={getAllProposals}> Fetch app proposals</ButtonReset>
       <LogoutButton onClick={logout}>Logout</LogoutButton>
     </FullPageCenter>
   );

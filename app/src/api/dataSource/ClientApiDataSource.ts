@@ -9,10 +9,10 @@ import {
 import {
   ClientApi,
   ClientMethod,
-  GetCountResponse,
-  IncreaseCountRequest,
-  IncreaseCountResponse,
-  ResetCounterResponse,
+  GetProposalMessagesRequest,
+  GetProposalMessagesResponse,
+  SendMessageRequest,
+  SendMessageResponse,
 } from '../clientApi';
 import { getContextId, getNodeUrl } from '../../utils/node';
 import {
@@ -59,6 +59,81 @@ function getConfigAndJwt() {
 }
 
 export class ClientApiDataSource implements ClientApi {
+  async getProposalMessages(
+    proposalsRequest: GetProposalMessagesRequest,
+  ): ApiResponse<GetProposalMessagesResponse> {
+    const { jwtObject, config, error } = getConfigAndJwt();
+    if (error) {
+      return { error };
+    }
+
+    const response = await getJsonRpcClient().mutate<
+      GetProposalMessagesRequest,
+      GetProposalMessagesResponse
+    >(
+      {
+        contextId: jwtObject?.context_id ?? getContextId(),
+        method: ClientMethod.GET_PROPOSAL_MESSAGES,
+        argsJson: proposalsRequest,
+        executorPublicKey: jwtObject.executor_public_key,
+      },
+      config,
+    );
+    if (response?.error) {
+      return await this.handleError(
+        response.error,
+        {},
+        this.getProposalMessages,
+      );
+    }
+
+    let getProposalsResponse: GetProposalMessagesResponse = {
+      proposals: response?.result?.output?.proposals,
+    } as GetProposalMessagesResponse;
+
+    return {
+      data: getProposalsResponse,
+      error: null,
+    };
+  }
+  async sendProposalMessage(
+    sendMessageRequest: SendMessageRequest,
+  ): ApiResponse<SendMessageResponse> {
+    const { jwtObject, config, error } = getConfigAndJwt();
+    if (error) {
+      return { error };
+    }
+
+    const response = await getJsonRpcClient().mutate<
+      SendMessageRequest,
+      SendMessageResponse
+    >(
+      {
+        contextId: jwtObject?.context_id ?? getContextId(),
+        method: ClientMethod.SEND_PROPOSAL_MESSAGE,
+        argsJson: sendMessageRequest,
+        executorPublicKey: jwtObject.executor_public_key,
+      },
+      config,
+    );
+    if (response?.error) {
+      return await this.handleError(
+        response.error,
+        {},
+        this.sendProposalMessage,
+      );
+    }
+
+    let sendMessageResponse: SendMessageResponse = {
+      result: response?.result?.output?.result,
+    } as SendMessageResponse;
+
+    return {
+      data: sendMessageResponse,
+      error: null,
+    };
+  }
+
   private async handleError(
     error: RpcError,
     params: any,
@@ -73,84 +148,5 @@ export class ClientApiDataSource implements ClientApi {
         error: await handleRpcError(error, getNodeUrl),
       };
     }
-  }
-  async getCount(): ApiResponse<GetCountResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().query<any, GetCountResponse>(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.GET_COUNT,
-        argsJson: {},
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.getCount);
-    }
-
-    return {
-      data: { count: Number(response?.result?.output) ?? 0 },
-      error: null,
-    };
-  }
-
-  async increaseCount(
-    params: IncreaseCountRequest,
-  ): ApiResponse<IncreaseCountResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().mutate<
-      IncreaseCountRequest,
-      IncreaseCountResponse
-    >(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.INCREASE_COUNT,
-        argsJson: params,
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.increaseCount);
-    }
-
-    return {
-      data: Number(response?.result?.output) ?? null,
-      error: null,
-    };
-  }
-
-  async reset(): ApiResponse<ResetCounterResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().mutate<any, ResetCounterResponse>(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.RESET,
-        argsJson: {},
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.reset);
-    }
-
-    return {
-      data: Number(response?.result?.output) ?? null,
-      error: null,
-    };
   }
 }

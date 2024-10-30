@@ -1,27 +1,51 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
-export interface GetCountResponse {
-  count: number;
+export interface ContractProposal {}
+
+//
+export interface CalimeroProposalMetadata {}
+
+export interface ContextDetails {}
+
+export interface Members {
+  publicKey: String;
 }
 
-export interface IncreaseCountRequest {
-  count: number;
+export interface Message {
+  proposalId: String;
+  publicKey: String;
+  text: String;
 }
 
-export interface IncreaseCountResponse {}
+export interface GetProposalMessagesRequest {
+  proposalId: String;
+}
 
-export interface ResetCounterResponse {}
+export interface GetProposalMessagesResponse {
+  proposals: CalimeroProposalMetadata[];
+}
+
+export interface SendMessageRequest {
+  proposalId: String;
+  publicKey: String;
+  text: String;
+}
+
+export interface SendMessageResponse {
+  result: boolean;
+}
 
 export enum ClientMethod {
-  GET_COUNT = 'get_count',
-  INCREASE_COUNT = 'increase_count',
-  RESET = 'reset',
+  GET_PROPOSAL_MESSAGES = 'get_proposal_messages',
+  SEND_PROPOSAL_MESSAGE = 'send_proposal_message',
 }
 
 export interface ClientApi {
-  getCount(): ApiResponse<GetCountResponse>;
-  increaseCount(
-    params: IncreaseCountRequest,
-  ): ApiResponse<IncreaseCountResponse>;
-  reset(): ApiResponse<ResetCounterResponse>;
+  //Cali Storage
+  getProposalMessages(
+    proposalsRequest: GetProposalMessagesRequest,
+  ): ApiResponse<GetProposalMessagesResponse>;
+  sendProposalMessage(
+    sendMessageRequest: SendMessageRequest,
+  ): ApiResponse<SendMessageResponse>;
 }

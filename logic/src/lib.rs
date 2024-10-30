@@ -27,8 +27,8 @@ pub struct Proposal {
     execution_status: ExecutionStatus,
     author: String,
     created_at: u64,
-    start_date: Option<u64>,
-    end_date: Option<u64>,
+    //start_date: Option<u64>,
+    //end_date: Option<u64>,
     vote: Option<Vote>,
     action: Action,
 }
@@ -165,6 +165,14 @@ impl AppState {
     }
 
     pub fn create_new_proposal(request: CreateProposalRequest) -> bool {
+        // let proposal_id = Blockchain::create_proposal("transfer", "xabi.near", 999999);
+        // let enhanced_proposal = Proposal {
+        //     proposal_id,
+        //     title,
+        //     description
+        // };
+        // storage.save(enhanced_proposal)
+
         true
     }
 
@@ -176,36 +184,3 @@ impl AppState {
         true
     }
 }
-
-// Frontend
-
-//Proposals
-//     pub fn get_proposals(request: GetProposalsRequest) -> Vec<Proposal> {
-//         vec![]
-//     }
-//     pub fn get_num_of_proposals(proposal_id: String) -> u16 {
-//         0
-//     }
-//     pub fn get_proposal_details(proposal_id: String) -> Proposal {
-//         Proposal::default()
-//     }
-// pub fn vote_for_proposal(request: VoteRequest) -> bool {
-//     true
-// }
-
-// pub fn get_context_details()->ContextDetails{
-//     ContextDetails::default()
-// }
-
-// pub fn  invite_to_context(invitationRequest)-> bool{
-
-// }
-
-// //Context
-// pub fn get_context_members() -> Vec<Member> {
-//     vec![]
-// }
-
-// pub fn get_context_members_count() -> u16 {
-//     0
-// }
