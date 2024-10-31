@@ -28,3 +28,29 @@ export interface ContractApi {
   getContextMembers(): ApiResponse<Members[]>;
   getContextMembersCount(): ApiResponse<number>;
 }
+
+// async removeProposal(proposalId: String): ApiResponse<boolean> {
+//   return await this.client.delete<boolean>(
+//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}`,
+//   );
+// }
+
+// async getProposalMessage(
+//   proposalId: String,
+//   messageId: String,
+// ): ApiResponse<Message> {
+//   return await this.client.get<Message>(
+//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/messages/${messageId}`,
+//   );
+// }
+
+// async getProposalMessages(proposalId: String): ApiResponse<Message[]> {
+//   return await this.client.get<Message[]>(
+//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/messages`,
+//   );
+// }
+// async approveProposal(proposalId: String): ApiResponse<boolean> {
+//   return await this.client.post<boolean>(
+//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/vote`,
+//   );
+// }
