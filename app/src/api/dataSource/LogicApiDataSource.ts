@@ -63,7 +63,7 @@ function getConfigAndJwt() {
   return { jwtObject, config };
 }
 
-export class ClientApiDataSource implements ClientApi {
+export class LogicApiDataSource implements ClientApi {
   async createProposal(
     request: CreateProposalRequest,
   ): ApiResponse<CreateProposalResponse> {
@@ -157,7 +157,7 @@ export class ClientApiDataSource implements ClientApi {
       executorPublicKey: jwtObject.executor_public_key,
     };
 
-    const response = await getJsonRpcClient().execute<
+    const response = await getJsonRpcClient().query<
       GetProposalMessagesRequest,
       GetProposalMessagesResponse
     >(params, config);
@@ -189,7 +189,7 @@ export class ClientApiDataSource implements ClientApi {
       return { error };
     }
 
-    const response = await getJsonRpcClient().execute<
+    const response = await getJsonRpcClient().mutate<
       SendProposalMessageRequest,
       SendProposalMessageResponse
     >(

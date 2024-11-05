@@ -11,11 +11,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
-  ClientApiDataSource,
+  LogicApiDataSource,
   getWsSubscriptionsClient,
 } from '../../api/dataSource/LogicApiDataSource';
 import {
   ContractProposal,
+  CreateProposalRequest,
+  CreateProposalResponse,
   GetProposalMessagesRequest,
   GetProposalMessagesResponse,
   Message,
@@ -112,7 +114,7 @@ export default function HomePage() {
       proposal_id: proposalId,
     };
     const result: ResponseData<GetProposalMessagesResponse> =
-      await new ClientApiDataSource().getProposalMessages(params);
+      await new LogicApiDataSource().getProposalMessages(params);
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
@@ -127,7 +129,7 @@ export default function HomePage() {
       text: request.text,
     };
     const result: ResponseData<GetProposalMessagesResponse> =
-      await new ClientApiDataSource().getProposalMessages(params);
+      await new LogicApiDataSource().getProposalMessages(params);
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
@@ -136,7 +138,17 @@ export default function HomePage() {
   }
 
   async function createProposal() {
-    //TODO implement this function
+    let request: CreateProposalRequest = {
+      receiver: 'vuki.testnet',
+    };
+
+    const result: ResponseData<CreateProposalResponse> =
+      await new LogicApiDataSource().createProposal(request);
+    if (result?.error) {
+      console.error('Error:', result.error);
+      window.alert(`${result.error.message}`);
+      return;
+    }
   }
 
   async function getAllProposals() {

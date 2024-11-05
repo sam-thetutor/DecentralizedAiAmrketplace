@@ -29,8 +29,7 @@ export interface SendProposalMessageResponse {
 }
 
 export interface CreateProposalRequest {
-  proposal_id: String;
-  author: String; //public key
+  receiver: String;
 }
 
 export interface CreateProposalResponse {
@@ -48,7 +47,7 @@ export interface ApproveProposalResponse {
 export enum ClientMethod {
   GET_PROPOSAL_MESSAGES = 'get_proposal_messages',
   SEND_PROPOSAL_MESSAGE = 'send_proposal_message',
-  CREATE_PROPOSAL_MESSAGES = 'create_proposal',
+  CREATE_PROPOSAL_MESSAGES = 'create_new_proposal',
   APPROVE_PROPOSAL_MESSAGE = 'approve_proposal',
 }
 
