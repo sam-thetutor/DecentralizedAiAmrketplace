@@ -5,7 +5,7 @@ import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/core-app-template/',
+  base: '/demo-blockchain-integrations/',
   build: {
     outDir: 'build',
     rollupOptions: {

@@ -13,17 +13,21 @@ import styled from 'styled-components';
 import {
   ClientApiDataSource,
   getWsSubscriptionsClient,
-} from '../../api/dataSource/ClientApiDataSource';
+} from '../../api/dataSource/LogicApiDataSource';
 import {
-  GetCountResponse,
+  ContractProposal,
   GetProposalMessagesRequest,
-  IncreaseCountRequest,
-  IncreaseCountResponse,
-  ResetCounterResponse,
+  GetProposalMessagesResponse,
+  Message,
+  SendProposalMessageRequest,
 } from '../../api/clientApi';
 import { getContextId, getStorageApplicationId } from '../../utils/node';
-import { clearApplicationId } from '../../utils/storage';
+import {
+  clearApplicationId,
+  getStorageExecutorPublicKey,
+} from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
+import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -44,6 +48,7 @@ const TextStyle = styled.div`
 const Button = styled.div`
   color: white;
   padding: 0.25em 1em;
+  margin: 0.25em;
   border-radius: 8px;
   font-size: 2em;
   background: #5dbb63;
@@ -95,7 +100,6 @@ export default function HomePage() {
   const applicationId = getStorageApplicationId();
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
-  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
@@ -105,20 +109,30 @@ export default function HomePage() {
 
   async function fetchProposalMessages(proposalId: String) {
     const params: GetProposalMessagesRequest = {
-      proposalId,
+      proposal_id: proposalId,
     };
-    const result: ResponseData<IncreaseCountResponse> =
+    const result: ResponseData<GetProposalMessagesResponse> =
       await new ClientApiDataSource().getProposalMessages(params);
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
       return;
     }
-    //TODO implement this function
   }
 
-  async function sendProposalMessage(proposalId: string, message: string) {
-    //TODO implement this function
+  async function sendProposalMessage(request: SendProposalMessageRequest) {
+    const params: SendProposalMessageRequest = {
+      proposal_id: request.proposal_id,
+      author: request.author,
+      text: request.text,
+    };
+    const result: ResponseData<GetProposalMessagesResponse> =
+      await new ClientApiDataSource().getProposalMessages(params);
+    if (result?.error) {
+      console.error('Error:', result.error);
+      window.alert(`${result.error.message}`);
+      return;
+    }
   }
 
   async function createProposal() {
@@ -126,7 +140,13 @@ export default function HomePage() {
   }
 
   async function getAllProposals() {
-    //TODO implement this function
+    const result: ResponseData<ContractProposal[]> =
+      await new ContextApiDataSource().getContractProposals();
+    if (result?.error) {
+      console.error('Error:', result.error);
+      window.alert(`${result.error.message}`);
+      return;
+    }
   }
 
   async function getProposalDetails() {
@@ -137,7 +157,7 @@ export default function HomePage() {
     //TODO implement this function
   }
 
-  async function voteForProposal() {
+  async function approveProposal() {
     //TODO implement this function
   }
 
@@ -153,25 +173,25 @@ export default function HomePage() {
     //TODO implement this function
   }
 
-  const observeNodeEvents = async () => {
-    let subscriptionsClient: SubscriptionsClient = getWsSubscriptionsClient();
-    await subscriptionsClient.connect();
-    subscriptionsClient.subscribe([getContextId()]);
+  // const observeNodeEvents = async () => {
+  //   let subscriptionsClient: SubscriptionsClient = getWsSubscriptionsClient();
+  //   await subscriptionsClient.connect();
+  //   subscriptionsClient.subscribe([getContextId()]);
 
-    subscriptionsClient?.addCallback((data: NodeEvent) => {
-      if (data.data.events && data.data.events.length > 0) {
-        let currentValue = String.fromCharCode(...data.data.events[0].data);
-        let currentValueInt = isNaN(parseInt(currentValue))
-          ? 0
-          : parseInt(currentValue);
-        setCount(currentValueInt);
-      }
-    });
-  };
+  //   subscriptionsClient?.addCallback((data: NodeEvent) => {
+  //     if (data.data.events && data.data.events.length > 0) {
+  //       let currentValue = String.fromCharCode(...data.data.events[0].data);
+  //       let currentValueInt = isNaN(parseInt(currentValue))
+  //         ? 0
+  //         : parseInt(currentValue);
+  //       setCount(currentValueInt);
+  //     }
+  //   });
+  // };
 
-  useEffect(() => {
-    observeNodeEvents();
-  }, []);
+  // useEffect(() => {
+  //   observeNodeEvents();
+  // }, []);
 
   const logout = () => {
     clearAppEndpoint();
@@ -186,18 +206,31 @@ export default function HomePage() {
         <span> Welcome to home page!</span>
       </TextStyle>
 
-      <StatusTitle> Current count is:</StatusTitle>
-      <StatusValue> {count ?? '-'}</StatusValue>
+      <text> Proposals </text>
+
+      <Button onClick={createProposal}> Create new proposals</Button>
+      <Button onClick={getAllProposals}> Get all proposals</Button>
+
+      <text> Messages</text>
       <Button
-        onClick={(e) => {
+        onClick={() => {
           fetchProposalMessages('1');
         }}
       >
-        {' '}
-        Fetch proposal messages
+        Get messages from proposal with id "1"
       </Button>
-      <ButtonReset onClick={createProposal}> Create new proposals</ButtonReset>
-      <ButtonReset onClick={getAllProposals}> Fetch app proposals</ButtonReset>
+      <Button
+        onClick={() => {
+          sendProposalMessage({
+            proposal_id: '1',
+            author: getStorageExecutorPublicKey(),
+            text: 'test' + Math.random(),
+          } as SendProposalMessageRequest);
+        }}
+      >
+        Send messages to proposal with id "1"
+      </Button>
+
       <LogoutButton onClick={logout}>Logout</LogoutButton>
     </FullPageCenter>
   );

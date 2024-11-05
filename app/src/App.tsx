@@ -9,7 +9,7 @@ import { getNodeUrl } from './utils/node';
 export default function App() {
   return (
     <AccessTokenWrapper getNodeUrl={getNodeUrl}>
-      <BrowserRouter basename="/core-app-template/">
+      <BrowserRouter basename="/demo-blockchain-integrations/">
         <Routes>
           <Route path="/" element={<SetupPage />} />
           <Route path="/auth" element={<Authenticate />} />

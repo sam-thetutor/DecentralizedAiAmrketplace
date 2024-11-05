@@ -1,5 +1,11 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
+export interface ContextDetails {}
+
+export interface Members {
+  publicKey: String;
+}
+
 export interface ContractProposal {}
 
 //
@@ -18,13 +24,9 @@ export interface Message {
 export interface ContractApi {
   //Contract
   getContractProposals(): ApiResponse<ContractProposal[]>;
-  getContractProposalMetadata(
-    proposalId: String,
-  ): ApiResponse<CalimeroProposalMetadata>;
   getNumOfProposals(proposalId: String): ApiResponse<number>;
   getProposalDetails(proposalId: String): ApiResponse<ContractProposal>;
-  voteForProposal(proposalId: String): ApiResponse<boolean>;
-  getContextDetails(): ApiResponse<ContextDetails>;
+  getContextDetails(contextId: String): ApiResponse<ContextDetails>;
   getContextMembers(): ApiResponse<Members[]>;
   getContextMembersCount(): ApiResponse<number>;
 }

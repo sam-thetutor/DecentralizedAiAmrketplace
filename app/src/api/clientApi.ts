@@ -1,43 +1,55 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
-export interface ContractProposal {}
-
-//
-export interface CalimeroProposalMetadata {}
-
-export interface ContextDetails {}
-
-export interface Members {
-  publicKey: String;
-}
-
 export interface Message {
-  proposalId: String;
-  publicKey: String;
+  id: String;
+  proposal_id: String;
+  author: String;
   text: String;
+  created_at: String;
 }
 
 export interface GetProposalMessagesRequest {
-  proposalId: String;
+  // proposalId: String;
+  proposal_id: String;
 }
 
 export interface GetProposalMessagesResponse {
-  proposals: CalimeroProposalMetadata[];
+  messages: Message[];
 }
 
-export interface SendMessageRequest {
-  proposalId: String;
-  publicKey: String;
+export interface SendProposalMessageRequest {
+  // proposalId: String;
+  proposal_id: String;
+  author: String;
   text: String;
 }
 
-export interface SendMessageResponse {
+export interface SendProposalMessageResponse {
   result: boolean;
+}
+
+export interface CreateProposalRequest {
+  proposal_id: String;
+  author: String; //public key
+}
+
+export interface CreateProposalResponse {
+  success: boolean;
+}
+
+export interface ApproveProposalRequest {
+  proposal_id: String;
+}
+
+export interface ApproveProposalResponse {
+  success: boolean;
 }
 
 export enum ClientMethod {
   GET_PROPOSAL_MESSAGES = 'get_proposal_messages',
   SEND_PROPOSAL_MESSAGE = 'send_proposal_message',
+  CREATE_PROPOSAL_MESSAGES = 'create_proposal',
+  APPROVE_PROPOSAL_MESSAGE = 'approve_proposal',
 }
 
 export interface ClientApi {
@@ -46,6 +58,12 @@ export interface ClientApi {
     proposalsRequest: GetProposalMessagesRequest,
   ): ApiResponse<GetProposalMessagesResponse>;
   sendProposalMessage(
-    sendMessageRequest: SendMessageRequest,
-  ): ApiResponse<SendMessageResponse>;
+    sendMessageRequest: SendProposalMessageRequest,
+  ): ApiResponse<SendProposalMessageResponse>;
+  createProposal(
+    request: CreateProposalRequest,
+  ): ApiResponse<CreateProposalResponse>;
+  approveProposal(
+    request: ApproveProposalRequest,
+  ): ApiResponse<ApproveProposalResponse>;
 }

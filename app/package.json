@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://calimero-network.github.io/core-app-template/",
+  "homepage": "https://calimero-network.github.io/demo-blockchain-integrations/",
   "dependencies": {
-    "@calimero-is-near/calimero-p2p-sdk": "0.0.41",
+    "@calimero-is-near/calimero-p2p-sdk": "file:../../core/packages/calimero-sdk",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "axios": "^1.6.7",
