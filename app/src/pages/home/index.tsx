@@ -4,32 +4,28 @@ import {
   getAccessToken,
   getAppEndpointKey,
   getRefreshToken,
-  NodeEvent,
   ResponseData,
-  SubscriptionsClient,
 } from '@calimero-is-near/calimero-p2p-sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { LogicApiDataSource } from '../../api/dataSource/LogicApiDataSource';
 import {
-  LogicApiDataSource,
-  getWsSubscriptionsClient,
-} from '../../api/dataSource/LogicApiDataSource';
-import {
-  ContractProposal,
+  ApproveProposalRequest,
+  ApproveProposalResponse,
   CreateProposalRequest,
   CreateProposalResponse,
   GetProposalMessagesRequest,
   GetProposalMessagesResponse,
-  Message,
   SendProposalMessageRequest,
 } from '../../api/clientApi';
-import { getContextId, getStorageApplicationId } from '../../utils/node';
+import { getStorageApplicationId } from '../../utils/node';
 import {
   clearApplicationId,
   getStorageExecutorPublicKey,
 } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
+import { ContractProposal } from '../../api/contractApi';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -170,7 +166,17 @@ export default function HomePage() {
   }
 
   async function approveProposal() {
-    //TODO implement this function
+    let request: ApproveProposalRequest = {
+      proposal_id: '1',
+    };
+
+    const result: ResponseData<ApproveProposalResponse> =
+      await new LogicApiDataSource().approveProposal(request);
+    if (result?.error) {
+      console.error('Error:', result.error);
+      window.alert(`${result.error.message}`);
+      return;
+    }
   }
 
   async function getContextDetails() {
@@ -222,6 +228,7 @@ export default function HomePage() {
 
       <Button onClick={createProposal}> Create new proposals</Button>
       <Button onClick={getAllProposals}> Get all proposals</Button>
+      <Button onClick={approveProposal}> Approve proposal 1</Button>
 
       <text> Messages</text>
       <Button
