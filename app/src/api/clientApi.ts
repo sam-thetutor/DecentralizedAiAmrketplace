@@ -29,16 +29,15 @@ export interface SendProposalMessageResponse {
 }
 
 export interface CreateProposalRequest {
-  sender: String;
   receiver: String;
 }
 
 export interface CreateProposalResponse {
-  success: boolean;
+  proposal_id: number[];
 }
 
 export interface ApproveProposalRequest {
-  proposal_id: String;
+  proposal_id: number[];
 }
 
 export interface ApproveProposalResponse {

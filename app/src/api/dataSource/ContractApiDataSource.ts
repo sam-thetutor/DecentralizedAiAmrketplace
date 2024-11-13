@@ -1,19 +1,14 @@
-import {
-  ApiResponse,
-  JsonRpcClient,
-  RpcQueryParams,
-} from '@calimero-is-near/calimero-p2p-sdk';
+import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
 import {
-  CalimeroProposalMetadata,
   ContextDetails,
   ContractApi,
   ContractProposal,
   Members,
 } from '../contractApi';
-import { getContextId } from '../../utils/node';
 import { getStorageAppEndpointKey } from '../../utils/storage';
 import axios from 'axios';
+import { getConfigAndJwt } from './LogicApiDataSource';
 
 export interface GetProposalsRequest {
   offset: number;
@@ -25,7 +20,12 @@ export class ContextApiDataSource implements ContractApi {
     request: GetProposalsRequest,
   ): ApiResponse<ContractProposal[]> {
     try {
-      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${getContextId()}/proposals`;
+      const { jwtObject, error } = getConfigAndJwt();
+      if (error) {
+        return { error };
+      }
+
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals`;
       const body = request;
 
       const response = await axios.post(apiEndpoint, body, {

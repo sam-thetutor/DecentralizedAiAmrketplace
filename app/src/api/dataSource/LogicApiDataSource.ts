@@ -72,8 +72,6 @@ export class LogicApiDataSource implements ClientApi {
       return { error };
     }
 
-    console.log('createProposal', request);
-
     const params: RpcQueryParams<CreateProposalRequest> = {
       contextId: jwtObject?.context_id ?? getContextId(),
       method: ClientMethod.CREATE_PROPOSAL_MESSAGES,
@@ -86,18 +84,12 @@ export class LogicApiDataSource implements ClientApi {
       CreateProposalResponse
     >(params, config);
 
-    console.log('createProposal response', response);
-
     if (response?.error) {
       return await this.handleError(response.error, {}, this.createProposal);
     }
 
-    let result: CreateProposalResponse = {
-      success: response?.result?.output?.success,
-    } as CreateProposalResponse;
-
     return {
-      data: result,
+      data: response.result.output as CreateProposalResponse,
       error: null,
     };
   }
@@ -130,9 +122,9 @@ export class LogicApiDataSource implements ClientApi {
       return await this.handleError(response.error, {}, this.approveProposal);
     }
 
-    let result: CreateProposalResponse = {
-      success: response?.result?.output?.success,
-    } as CreateProposalResponse;
+    let result: ApproveProposalResponse = {
+      success: response?.result?.output?.success ?? false,
+    };
 
     return {
       data: result,

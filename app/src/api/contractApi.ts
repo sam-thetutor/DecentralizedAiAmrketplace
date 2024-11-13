@@ -7,7 +7,19 @@ export interface Members {
   publicKey: String;
 }
 
-export interface ContractProposal {}
+export interface ProposalAction {
+  scope: string;
+  params: {
+    amount: number;
+    receiver_id: string;
+  }
+}
+
+export interface ContractProposal {
+  id: number[];
+  author_id: string;
+  actions: ProposalAction[];
+}
 
 //
 export interface CalimeroProposalMetadata {}
