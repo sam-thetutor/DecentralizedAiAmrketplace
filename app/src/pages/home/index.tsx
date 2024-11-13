@@ -256,7 +256,6 @@ export default function HomePage() {
       return;
     }
 
-
     console.log('approveProposal result', result);
   }
 
@@ -368,7 +367,10 @@ export default function HomePage() {
               ))}
             </div>
             <div className="flex-container center">
-              <ButtonSm onClick={() => approveProposal(selectedProposal.id)}> Approve proposal</ButtonSm>
+              <ButtonSm onClick={() => approveProposal(selectedProposal.id)}>
+                {' '}
+                Approve proposal
+              </ButtonSm>
               <ButtonSm
                 onClick={() => {
                   fetchProposalMessages(getBs58Id(selectedProposal.id));
