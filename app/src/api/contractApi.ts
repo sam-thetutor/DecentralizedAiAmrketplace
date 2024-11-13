@@ -1,4 +1,5 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
+import { GetProposalsRequest } from './dataSource/ContractApiDataSource';
 
 export interface ContextDetails {}
 
@@ -6,7 +7,19 @@ export interface Members {
   publicKey: String;
 }
 
-export interface ContractProposal {}
+export interface ProposalAction {
+  scope: string;
+  params: {
+    amount: number;
+    receiver_id: string;
+  }
+}
+
+export interface ContractProposal {
+  id: number[];
+  author_id: string;
+  actions: ProposalAction[];
+}
 
 //
 export interface CalimeroProposalMetadata {}
@@ -23,7 +36,9 @@ export interface Message {
 
 export interface ContractApi {
   //Contract
-  getContractProposals(): ApiResponse<ContractProposal[]>;
+  getContractProposals(
+    request: GetProposalsRequest,
+  ): ApiResponse<ContractProposal[]>;
   getNumOfProposals(proposalId: String): ApiResponse<number>;
   getProposalDetails(proposalId: String): ApiResponse<ContractProposal>;
   getContextDetails(contextId: String): ApiResponse<ContextDetails>;

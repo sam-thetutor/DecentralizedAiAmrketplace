@@ -6,7 +6,8 @@ import {
   getRefreshToken,
   ResponseData,
 } from '@calimero-is-near/calimero-p2p-sdk';
-import React, { useEffect } from 'react';
+import bs58 from 'bs58';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LogicApiDataSource } from '../../api/dataSource/LogicApiDataSource';
 import {
@@ -43,7 +44,7 @@ const TextStyle = styled.div`
   font-size: 2em;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   color: white;
   padding: 0.25em 1em;
   margin: 0.25em;
@@ -53,6 +54,22 @@ const Button = styled.div`
   cursor: pointer;
   justify-content: center;
   display: flex;
+  border: none;
+  outline: none;
+`;
+
+const ButtonSm = styled.button`
+  color: white;
+  padding: 0.25em 1em;
+  margin: 0.25em;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #5dbb63;
+  cursor: pointer;
+  justify-content: center;
+  display: flex;
+  border: none;
+  outline: none;
 `;
 
 const ButtonReset = styled.div`
@@ -67,19 +84,6 @@ const ButtonReset = styled.div`
   margin-top: 1rem;
 `;
 
-const StatusTitle = styled.div`
-  color: white;
-  justify-content: center;
-  display: flex;
-`;
-
-const StatusValue = styled.div`
-  color: white;
-  font-size: 60px;
-  justify-content: center;
-  display: flex;
-`;
-
 const LogoutButton = styled.div`
   color: black;
   margin-top: 2rem;
@@ -92,12 +96,69 @@ const LogoutButton = styled.div`
   display: flex;
 `;
 
+const ProposalsWrapper = styled.div`
+  .select-dropdown {
+    text-align: center;
+    color: white;
+    padding: 0.25em 1em;
+    margin: 0.25em;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #5dbb63;
+    cursor: pointer;
+    justify-content: center;
+    display: flex;
+    border: none;
+    outline: none;
+  }
+
+  .proposal-data {
+    font-size: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .actions-headers {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .flex-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .center {
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .title {
+    padding: 0;
+    margin: 0;
+  }
+
+  .actions-title {
+    padding-top: 0.5rem;
+  }
+
+  .highlight {
+    background: #ffa500;
+  }
+`;
+
 export default function HomePage() {
   const navigate = useNavigate();
   const url = getAppEndpointKey();
   const applicationId = getStorageApplicationId();
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
+  const [createProposalLoading, setCreateProposalLoading] = useState(false);
+  const [proposals, setProposals] = useState<ContractProposal[]>([]);
+  const [selectedProposal, setSelectedProposal] = useState<ContractProposal>();
 
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
@@ -134,6 +195,7 @@ export default function HomePage() {
   }
 
   async function createProposal() {
+    setCreateProposalLoading(true);
     let request: CreateProposalRequest = {
       receiver: 'vuki.testnet',
     };
@@ -143,19 +205,35 @@ export default function HomePage() {
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
+      setCreateProposalLoading(false);
       return;
     }
+    const bytes = Uint8Array.from(result.data.proposal_id);
+    const address = bs58.encode(bytes);
+    await getProposals();
+    window.alert(`Proposal with id: ${address} created successfully`);
+    setCreateProposalLoading(false);
   }
 
-  async function getAllProposals() {
+  const getProposals = async () => {
     const result: ResponseData<ContractProposal[]> =
-      await new ContextApiDataSource().getContractProposals();
+      await new ContextApiDataSource().getContractProposals({
+        offset: 0,
+        limit: 10,
+      });
     if (result?.error) {
       console.error('Error:', result.error);
-      window.alert(`${result.error.message}`);
-      return;
+    } else {
+      // @ts-ignore
+      setProposals(result.data.data);
     }
-  }
+  };
+  useEffect(() => {
+    const setAllProposals = async () => {
+      await getProposals();
+    };
+    setAllProposals();
+  }, []);
 
   async function getProposalDetails() {
     //TODO implement this function
@@ -165,9 +243,9 @@ export default function HomePage() {
     //TODO implement this function
   }
 
-  async function approveProposal() {
+  async function approveProposal(proposalId: number[]) {
     let request: ApproveProposalRequest = {
-      proposal_id: '1',
+      proposal_id: proposalId,
     };
 
     const result: ResponseData<ApproveProposalResponse> =
@@ -177,6 +255,9 @@ export default function HomePage() {
       window.alert(`${result.error.message}`);
       return;
     }
+
+
+    console.log('approveProposal result', result);
   }
 
   async function getContextDetails() {
@@ -218,38 +299,98 @@ export default function HomePage() {
     navigate('/auth');
   };
 
+  const getBs58Id = (proposalId: number[]) => {
+    const bytes = Uint8Array.from(proposalId);
+    return bs58.encode(bytes);
+  };
+
   return (
     <FullPageCenter>
       <TextStyle>
         <span> Welcome to home page!</span>
       </TextStyle>
 
-      <text> Proposals </text>
+      <div> Proposals </div>
 
-      <Button onClick={createProposal}> Create new proposals</Button>
-      <Button onClick={getAllProposals}> Get all proposals</Button>
-      <Button onClick={approveProposal}> Approve proposal 1</Button>
-
-      <text> Messages</text>
-      <Button
-        onClick={() => {
-          fetchProposalMessages('1');
-        }}
-      >
-        Get messages from proposal with id "1"
-      </Button>
-      <Button
-        onClick={() => {
-          sendProposalMessage({
-            proposal_id: '1',
-            author: getStorageExecutorPublicKey(),
-            text: 'test' + Math.random(),
-          } as SendProposalMessageRequest);
-        }}
-      >
-        Send messages to proposal with id "1"
+      <Button onClick={createProposal} disabled={createProposalLoading}>
+        {createProposalLoading ? 'Loading...' : 'Create new proposals'}
       </Button>
 
+      <ProposalsWrapper>
+        <select
+          value={
+            selectedProposal
+              ? getBs58Id(selectedProposal.id)
+              : 'Select Proposal'
+          }
+          onChange={(e) =>
+            setSelectedProposal(
+              proposals.find((p) => getBs58Id(p.id) === e.target.value),
+            )
+          }
+          className="select-dropdown"
+        >
+          <option value="">Select a proposal</option>
+          {proposals &&
+            proposals.map((proposal) => (
+              <option
+                key={getBs58Id(proposal.id)}
+                value={getBs58Id(proposal.id)}
+              >
+                {getBs58Id(proposal.id)}
+              </option>
+            ))}
+        </select>
+        {selectedProposal && (
+          <div className="proposal-data">
+            <div className="flex-container">
+              <h3 className="title">Proposal ID:</h3>
+              <span>{getBs58Id(selectedProposal.id)}</span>
+            </div>
+            <div className="flex-container">
+              <h3 className="title">Author ID:</h3>
+              <span>{selectedProposal.author_id}</span>
+            </div>
+
+            <h3 className="title actions-title">Actions</h3>
+            <div className="actions-headers highlight">
+              <div>Scope</div>
+              <div>Amount</div>
+              <div>Receiver ID</div>
+            </div>
+            <div>
+              {selectedProposal.actions.map((action, index) => (
+                <div key={index} className="actions-headers">
+                  <div>{action.scope}</div>
+                  <div>{action.params.amount}</div>
+                  <div>{action.params.receiver_id}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex-container center">
+              <ButtonSm onClick={() => approveProposal(selectedProposal.id)}> Approve proposal</ButtonSm>
+              <ButtonSm
+                onClick={() => {
+                  fetchProposalMessages(getBs58Id(selectedProposal.id));
+                }}
+              >
+                Get Messages
+              </ButtonSm>
+              <ButtonSm
+                onClick={() => {
+                  sendProposalMessage({
+                    proposal_id: getBs58Id(selectedProposal.id),
+                    author: getStorageExecutorPublicKey(),
+                    text: 'test' + Math.random(),
+                  } as SendProposalMessageRequest);
+                }}
+              >
+                Send Message
+              </ButtonSm>
+            </div>
+          </div>
+        )}
+      </ProposalsWrapper>
       <LogoutButton onClick={logout}>Logout</LogoutButton>
     </FullPageCenter>
   );

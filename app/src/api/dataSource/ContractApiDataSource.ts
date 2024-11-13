@@ -1,16 +1,49 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
 import {
-  CalimeroProposalMetadata,
   ContextDetails,
   ContractApi,
   ContractProposal,
   Members,
 } from '../contractApi';
+import { getStorageAppEndpointKey } from '../../utils/storage';
+import axios from 'axios';
+import { getConfigAndJwt } from './LogicApiDataSource';
+
+export interface GetProposalsRequest {
+  offset: number;
+  limit: number;
+}
 
 export class ContextApiDataSource implements ContractApi {
-  getContractProposals(): ApiResponse<ContractProposal[]> {
-    throw new Error('Method not implemented.');
+  async getContractProposals(
+    request: GetProposalsRequest,
+  ): ApiResponse<ContractProposal[]> {
+    try {
+      const { jwtObject, error } = getConfigAndJwt();
+      if (error) {
+        return { error };
+      }
+
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals`;
+      const body = request;
+
+      const response = await axios.post(apiEndpoint, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return {
+        data: response.data ?? [],
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error as Error,
+      };
+    }
   }
   getNumOfProposals(proposalId: String): ApiResponse<number> {
     throw new Error('Method not implemented.');
