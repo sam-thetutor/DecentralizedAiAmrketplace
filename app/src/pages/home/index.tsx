@@ -245,7 +245,7 @@ export default function HomePage() {
 
   async function approveProposal(proposalId: number[]) {
     let request: ApproveProposalRequest = {
-      proposal_id: proposalId,
+      proposal_id: JSON.stringify(proposalId),
     };
 
     const result: ResponseData<ApproveProposalResponse> =
