@@ -33,7 +33,7 @@ export interface CreateProposalRequest {
 }
 
 export interface CreateProposalResponse {
-  proposal_id: number[];
+  proposal_id: String;
 }
 
 export interface ApproveProposalRequest {

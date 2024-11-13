@@ -6,7 +6,6 @@ import {
   getRefreshToken,
   ResponseData,
 } from '@calimero-is-near/calimero-p2p-sdk';
-import bs58 from 'bs58';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LogicApiDataSource } from '../../api/dataSource/LogicApiDataSource';
@@ -159,6 +158,7 @@ export default function HomePage() {
   const [createProposalLoading, setCreateProposalLoading] = useState(false);
   const [proposals, setProposals] = useState<ContractProposal[]>([]);
   const [selectedProposal, setSelectedProposal] = useState<ContractProposal>();
+  const [approveProposalLoading, setApproveProposalLoading] = useState(false);
 
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
@@ -208,10 +208,9 @@ export default function HomePage() {
       setCreateProposalLoading(false);
       return;
     }
-    const bytes = Uint8Array.from(result.data.proposal_id);
-    const address = bs58.encode(bytes);
-    await getProposals();
-    window.alert(`Proposal with id: ${address} created successfully`);
+    window.alert(
+      `Proposal with id: ${result.data.proposal_id} created successfully`,
+    );
     setCreateProposalLoading(false);
   }
 
@@ -243,9 +242,10 @@ export default function HomePage() {
     //TODO implement this function
   }
 
-  async function approveProposal(proposalId: number[]) {
+  async function approveProposal(proposalId: string) {
+    setApproveProposalLoading(true);
     let request: ApproveProposalRequest = {
-      proposal_id: JSON.stringify(proposalId),
+      proposal_id: proposalId,
     };
 
     const result: ResponseData<ApproveProposalResponse> =
@@ -253,10 +253,11 @@ export default function HomePage() {
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
+      setApproveProposalLoading(false);
       return;
     }
-
-    console.log('approveProposal result', result);
+    setApproveProposalLoading(false);
+    window.alert(`Proposal approved successfully`);
   }
 
   async function getContextDetails() {
@@ -298,11 +299,6 @@ export default function HomePage() {
     navigate('/auth');
   };
 
-  const getBs58Id = (proposalId: number[]) => {
-    const bytes = Uint8Array.from(proposalId);
-    return bs58.encode(bytes);
-  };
-
   return (
     <FullPageCenter>
       <TextStyle>
@@ -317,26 +313,17 @@ export default function HomePage() {
 
       <ProposalsWrapper>
         <select
-          value={
-            selectedProposal
-              ? getBs58Id(selectedProposal.id)
-              : 'Select Proposal'
-          }
+          value={selectedProposal ? selectedProposal.id : 'Select Proposal'}
           onChange={(e) =>
-            setSelectedProposal(
-              proposals.find((p) => getBs58Id(p.id) === e.target.value),
-            )
+            setSelectedProposal(proposals.find((p) => p.id === e.target.value))
           }
           className="select-dropdown"
         >
           <option value="">Select a proposal</option>
           {proposals &&
             proposals.map((proposal) => (
-              <option
-                key={getBs58Id(proposal.id)}
-                value={getBs58Id(proposal.id)}
-              >
-                {getBs58Id(proposal.id)}
+              <option key={proposal.id} value={proposal.id}>
+                {proposal.id}
               </option>
             ))}
         </select>
@@ -344,7 +331,7 @@ export default function HomePage() {
           <div className="proposal-data">
             <div className="flex-container">
               <h3 className="title">Proposal ID:</h3>
-              <span>{getBs58Id(selectedProposal.id)}</span>
+              <span>{selectedProposal.id}</span>
             </div>
             <div className="flex-container">
               <h3 className="title">Author ID:</h3>
@@ -368,12 +355,11 @@ export default function HomePage() {
             </div>
             <div className="flex-container center">
               <ButtonSm onClick={() => approveProposal(selectedProposal.id)}>
-                {' '}
-                Approve proposal
+                {approveProposalLoading ? 'Loading...' : 'Approve proposal'}
               </ButtonSm>
               <ButtonSm
                 onClick={() => {
-                  fetchProposalMessages(getBs58Id(selectedProposal.id));
+                  fetchProposalMessages(selectedProposal.id);
                 }}
               >
                 Get Messages
@@ -381,7 +367,7 @@ export default function HomePage() {
               <ButtonSm
                 onClick={() => {
                   sendProposalMessage({
-                    proposal_id: getBs58Id(selectedProposal.id),
+                    proposal_id: selectedProposal.id,
                     author: getStorageExecutorPublicKey(),
                     text: 'test' + Math.random(),
                   } as SendProposalMessageRequest);
