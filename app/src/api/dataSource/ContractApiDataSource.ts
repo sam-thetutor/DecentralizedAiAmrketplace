@@ -1,4 +1,8 @@
-import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
+import {
+  ApiResponse,
+  JsonRpcClient,
+  RpcQueryParams,
+} from '@calimero-is-near/calimero-p2p-sdk';
 
 import {
   CalimeroProposalMetadata,
@@ -7,10 +11,37 @@ import {
   ContractProposal,
   Members,
 } from '../contractApi';
+import { getContextId } from '../../utils/node';
+import { getStorageAppEndpointKey } from '../../utils/storage';
+import axios from 'axios';
+
+export interface GetProposalsRequest {
+  offset: number;
+  limit: number;
+}
 
 export class ContextApiDataSource implements ContractApi {
-  getContractProposals(): ApiResponse<ContractProposal[]> {
-    throw new Error('Method not implemented.');
+  async getContractProposals(request: GetProposalsRequest): ApiResponse<ContractProposal[]> {
+    try {
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${getContextId()}/proposals`;
+      const body = request;
+
+      const response = await axios.post(apiEndpoint, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return {
+        data: response.data ?? [],
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error as Error,
+      };
+    }
   }
   getNumOfProposals(proposalId: String): ApiResponse<number> {
     throw new Error('Method not implemented.');

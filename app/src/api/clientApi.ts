@@ -29,6 +29,7 @@ export interface SendProposalMessageResponse {
 }
 
 export interface CreateProposalRequest {
+  sender: String;
   receiver: String;
 }
 

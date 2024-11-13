@@ -149,11 +149,13 @@ export default function HomePage() {
 
   async function getAllProposals() {
     const result: ResponseData<ContractProposal[]> =
-      await new ContextApiDataSource().getContractProposals();
+      await new ContextApiDataSource().getContractProposals({offset: 0, limit: 10});
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
       return;
+    } else {
+      console.log('Proposals:', result.data);
     }
   }
 

@@ -36,7 +36,7 @@ export function getWsSubscriptionsClient() {
   return new WsSubscriptionsClient(getStorageAppEndpointKey() ?? '', '/ws');
 }
 
-function getConfigAndJwt() {
+export function getConfigAndJwt() {
   const jwtObject: JsonWebToken | null = getJWTObject();
   const headers: AxiosHeader | null = createJwtHeader();
   if (!headers) {
