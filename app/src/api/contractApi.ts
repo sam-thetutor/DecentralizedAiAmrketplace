@@ -24,7 +24,9 @@ export interface Message {
 
 export interface ContractApi {
   //Contract
-  getContractProposals(request: GetProposalsRequest): ApiResponse<ContractProposal[]>;
+  getContractProposals(
+    request: GetProposalsRequest,
+  ): ApiResponse<ContractProposal[]>;
   getNumOfProposals(proposalId: String): ApiResponse<number>;
   getProposalDetails(proposalId: String): ApiResponse<ContractProposal>;
   getContextDetails(contextId: String): ApiResponse<ContextDetails>;

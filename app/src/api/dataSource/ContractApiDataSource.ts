@@ -21,7 +21,9 @@ export interface GetProposalsRequest {
 }
 
 export class ContextApiDataSource implements ContractApi {
-  async getContractProposals(request: GetProposalsRequest): ApiResponse<ContractProposal[]> {
+  async getContractProposals(
+    request: GetProposalsRequest,
+  ): ApiResponse<ContractProposal[]> {
     try {
       const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${getContextId()}/proposals`;
       const body = request;
