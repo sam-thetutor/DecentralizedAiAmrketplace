@@ -21,6 +21,7 @@ import {
 import { getStorageApplicationId } from '../../utils/node';
 import {
   clearApplicationId,
+  getJWTObject,
   getStorageExecutorPublicKey,
 } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
@@ -186,11 +187,16 @@ export default function HomePage() {
   async function sendProposalMessage(request: SendProposalMessageRequest) {
     const params: SendProposalMessageRequest = {
       proposal_id: request.proposal_id,
-      author: request.author,
-      text: request.text,
+      message: {
+        id: request.message.id,
+        proposal_id: request.proposal_id,
+        author: request.message.author,
+        text: request.message.text,
+        created_at: new Date().toISOString(),
+      },
     };
-    const result: ResponseData<GetProposalMessagesResponse> =
-      await new LogicApiDataSource().getProposalMessages(params);
+    const result: ResponseData<SendProposalMessageResponse> =
+      await new LogicApiDataSource().sendProposalMessage(params);
     if (result?.error) {
       console.error('Error:', result.error);
       window.alert(`${result.error.message}`);
@@ -401,8 +407,13 @@ export default function HomePage() {
                 onClick={() => {
                   sendProposalMessage({
                     proposal_id: selectedProposal.id,
-                    author: getStorageExecutorPublicKey(),
-                    text: 'test' + Math.random(),
+                    message: {
+                      id: 'test' + Math.random(),
+                      proposal_id: selectedProposal.id,
+                      author: getJWTObject()?.executor_public_key,
+                      text: 'test' + Math.random(),
+                      created_at: new Date().toISOString(),
+                    },
                   } as SendProposalMessageRequest);
                 }}
               >

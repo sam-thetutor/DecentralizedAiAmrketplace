@@ -181,7 +181,7 @@ export class LogicApiDataSource implements ClientApi {
       return { error };
     }
 
-    const response = await getJsonRpcClient().mutate<
+    const response = await getJsonRpcClient().execute<
       SendProposalMessageRequest,
       SendProposalMessageResponse
     >(
