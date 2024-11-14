@@ -6,7 +6,7 @@ import {
   getRefreshToken,
   ResponseData,
 } from '@calimero-is-near/calimero-p2p-sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { LogicApiDataSource } from '../../api/dataSource/LogicApiDataSource';
 import {
@@ -165,6 +165,8 @@ export default function HomePage() {
   >(null);
   const [proposalCount, setProposalCount] = useState<number>(0);
   const [approveProposalLoading, setApproveProposalLoading] = useState(false);
+  const [hasAlerted, setHasAlerted] = useState<boolean>(false);
+  const lastExecutedProposalRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
@@ -231,11 +233,32 @@ export default function HomePage() {
       });
     if (result?.error) {
       console.error('Error:', result.error);
+      setProposals([]);
     } else {
-      // @ts-ignore
-      setProposals(result.data.data);
+      // @ts-ignore - we know the data structure has a nested data property
+      const proposalsData = result.data?.data || [];
+      
+      if (selectedProposal && proposals.length > 0) {
+        const stillExists = proposalsData.some(
+          (proposal) => proposal.id === selectedProposal.id
+        );
+        
+        if (!stillExists && lastExecutedProposalRef.current !== selectedProposal.id) {
+          window.alert(`Proposal with id: ${selectedProposal.id} was executed`);
+          lastExecutedProposalRef.current = selectedProposal.id;
+          setSelectedProposal(undefined);
+        }
+      }
+
+      setProposals(proposalsData);
     }
   };
+
+  useEffect(() => {
+    if (selectedProposal) {
+      lastExecutedProposalRef.current = null;
+    }
+  }, [selectedProposal]);
 
   const [approvers, setApprovers] = useState<string[]>([]);
 
@@ -394,9 +417,12 @@ export default function HomePage() {
               <h3 className="title">Approvers:</h3>
               {approvers.length !== 0 ? (
                 approvers.map((a, i) => (
-                  <span key={a}>
-                    {i + 1}. {a}
-                  </span>
+                  <>
+                    <br />
+                    <span key={a}>
+                      {i + 1}. {a}
+                    </span>
+                  </>
                 ))
               ) : (
                 <span>No approvers</span>
