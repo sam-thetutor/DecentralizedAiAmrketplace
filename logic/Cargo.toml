@@ -8,7 +8,12 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-calimero-sdk = { git = "https://github.com/calimero-network/core", branch = "master" }
+#calimero-sdk = { git = "https://github.com/calimero-network/core", branch = "master" }
+#calimero-storage = { git = "https://github.com/calimero-network/core", branch = "master" }
+
+calimero-sdk = { path = "../../core/crates/sdk" }
+calimero-storage = { path = "../../core/crates/storage" }
+
 
 [profile.app-release]
 inherits = "release"
