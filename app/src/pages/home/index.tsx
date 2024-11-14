@@ -213,7 +213,7 @@ export default function HomePage() {
       return;
     }
     window.alert(
-      `Proposal with id: ${result.data.proposal_id} created successfully`,
+      `Proposal with id: ${result.data} created successfully`,
     );
     setCreateProposalLoading(false);
   }
