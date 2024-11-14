@@ -393,7 +393,11 @@ export default function HomePage() {
             <div className="">
               <h3 className="title">Approvers:</h3>
               {approvers.length !== 0 ? (
-                approvers.map((a,i) => <span key={a}>{i+1}. {a}</span>)
+                approvers.map((a, i) => (
+                  <span key={a}>
+                    {i + 1}. {a}
+                  </span>
+                ))
               ) : (
                 <span>No approvers</span>
               )}
