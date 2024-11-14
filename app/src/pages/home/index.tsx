@@ -212,9 +212,7 @@ export default function HomePage() {
       setCreateProposalLoading(false);
       return;
     }
-    window.alert(
-      `Proposal with id: ${result.data} created successfully`,
-    );
+    window.alert(`Proposal with id: ${result.data} created successfully`);
     setCreateProposalLoading(false);
   }
 
