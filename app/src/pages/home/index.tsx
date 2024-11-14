@@ -17,6 +17,7 @@ import {
   GetProposalMessagesRequest,
   GetProposalMessagesResponse,
   SendProposalMessageRequest,
+  SendProposalMessageResponse,
 } from '../../api/clientApi';
 import { getStorageApplicationId } from '../../utils/node';
 import {
@@ -236,6 +237,18 @@ export default function HomePage() {
     }
   };
 
+  const [approvers, setApprovers] = useState<string[]>([]);
+
+  const getApprovers = async () => {
+    if (selectedProposal) {
+      const result = await new ContextApiDataSource().getProposalApprovals(
+        selectedProposal.id,
+      );
+      // @ts-ignore
+      setApprovers(result?.data.data ?? []);
+    }
+  };
+
   const getProposalApprovals = async () => {
     if (selectedProposal) {
       const result: ResponseData<ApprovalsCount> =
@@ -267,6 +280,7 @@ export default function HomePage() {
       await getProposalApprovals();
       await getProposals();
       await getNumOfProposals();
+      await getApprovers();
     };
     setProposalData();
     const intervalId = setInterval(setProposalData, 5000);
@@ -376,7 +390,14 @@ export default function HomePage() {
               <h3 className="title">Number of approvals:</h3>
               <span>{selectedProposalApprovals}</span>
             </div>
-
+            <div className="">
+              <h3 className="title">Approvers:</h3>
+              {approvers.length !== 0 ? (
+                approvers.map((a,i) => <span key={a}>{i+1}. {a}</span>)
+              ) : (
+                <span>No approvers</span>
+              )}
+            </div>
             <h3 className="title actions-title">Actions</h3>
             <div className="actions-headers highlight">
               <div>Scope</div>
