@@ -237,13 +237,16 @@ export default function HomePage() {
     } else {
       // @ts-ignore - we know the data structure has a nested data property
       const proposalsData = result.data?.data || [];
-      
+
       if (selectedProposal && proposals.length > 0) {
         const stillExists = proposalsData.some(
-          (proposal) => proposal.id === selectedProposal.id
+          (proposal) => proposal.id === selectedProposal.id,
         );
-        
-        if (!stillExists && lastExecutedProposalRef.current !== selectedProposal.id) {
+
+        if (
+          !stillExists &&
+          lastExecutedProposalRef.current !== selectedProposal.id
+        ) {
           window.alert(`Proposal with id: ${selectedProposal.id} was executed`);
           lastExecutedProposalRef.current = selectedProposal.id;
           setSelectedProposal(undefined);
