@@ -34,13 +34,18 @@ export interface Message {
   publicKey: String;
 }
 
+export interface ApprovalsCount {
+  proposal_id: string;
+  num_approvals: number;
+}
+
 export interface ContractApi {
   //Contract
   getContractProposals(
     request: GetProposalsRequest,
   ): ApiResponse<ContractProposal[]>;
-  getNumOfProposals(proposalId: String): ApiResponse<number>;
-  getProposalDetails(proposalId: String): ApiResponse<ContractProposal>;
+  getNumOfProposals(): ApiResponse<number>;
+  getProposalApprovals(proposalId: String): ApiResponse<ApprovalsCount>;
   getContextDetails(contextId: String): ApiResponse<ContextDetails>;
   getContextMembers(): ApiResponse<Members[]>;
   getContextMembersCount(): ApiResponse<number>;

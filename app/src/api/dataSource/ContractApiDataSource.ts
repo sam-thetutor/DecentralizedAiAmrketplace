@@ -1,6 +1,7 @@
 import { ApiResponse } from '@calimero-is-near/calimero-p2p-sdk';
 
 import {
+  ApprovalsCount,
   ContextDetails,
   ContractApi,
   ContractProposal,
@@ -45,12 +46,64 @@ export class ContextApiDataSource implements ContractApi {
       };
     }
   }
-  getNumOfProposals(proposalId: String): ApiResponse<number> {
-    throw new Error('Method not implemented.');
+
+  async getProposalApprovals(proposalId: String): ApiResponse<ApprovalsCount> {
+    try {
+      const { jwtObject, error } = getConfigAndJwt();
+      if (error) {
+        return { error };
+      }
+
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/${proposalId}/approvals/count`;
+
+      const response = await axios.get(apiEndpoint);
+
+      return {
+        data: response.data ?? [],
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error as Error,
+      };
+    }
   }
-  getProposalDetails(proposalId: String): ApiResponse<ContractProposal> {
-    throw new Error('Method not implemented.');
+
+  async getNumOfProposals(): ApiResponse<number> {
+    try {
+      const { jwtObject, error } = getConfigAndJwt();
+      if (error) {
+        return { error };
+      }
+
+      const apiEndpointLimit = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/count`;
+      const limitResponse = await axios.get(apiEndpointLimit);
+
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals`;
+      const body = {
+        offset: 0,
+        limit: limitResponse.data.data,
+      };
+
+      const response = await axios.post(apiEndpoint, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return {
+        data: response.data.data.length ?? 0,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error as Error,
+      };
+    }
   }
+
   getContextDetails(): ApiResponse<ContextDetails> {
     // try {
     //   const headers: Header | null = await createAuthHeader(

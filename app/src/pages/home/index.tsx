@@ -25,7 +25,7 @@ import {
 } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
-import { ContractProposal } from '../../api/contractApi';
+import { ApprovalsCount, ContractProposal } from '../../api/contractApi';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -158,6 +158,10 @@ export default function HomePage() {
   const [createProposalLoading, setCreateProposalLoading] = useState(false);
   const [proposals, setProposals] = useState<ContractProposal[]>([]);
   const [selectedProposal, setSelectedProposal] = useState<ContractProposal>();
+  const [selectedProposalApprovals, setSelectedProposalApprovals] = useState<
+    null | number
+  >(null);
+  const [proposalCount, setProposalCount] = useState<number>(0);
   const [approveProposalLoading, setApproveProposalLoading] = useState(false);
 
   useEffect(() => {
@@ -227,22 +231,43 @@ export default function HomePage() {
       setProposals(result.data.data);
     }
   };
-  useEffect(() => {
-    const setAllProposals = async () => {
-      await getProposals();
-    };
-    setAllProposals();
-    const intervalId = setInterval(setAllProposals, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
 
-  async function getProposalDetails() {
-    //TODO implement this function
-  }
+  const getProposalApprovals = async () => {
+    if (selectedProposal) {
+      const result: ResponseData<ApprovalsCount> =
+        await new ContextApiDataSource().getProposalApprovals(
+          selectedProposal?.id,
+        );
+      if (result?.error) {
+        console.error('Error:', result.error);
+      } else {
+        // @ts-ignore
+        setSelectedProposalApprovals(result.data.data.num_approvals);
+      }
+    }
+  };
 
   async function getNumOfProposals() {
-    //TODO implement this function
+    const result: ResponseData<number> =
+      await new ContextApiDataSource().getNumOfProposals();
+    if (result?.error) {
+      console.error('Error:', result.error);
+    } else {
+      // @ts-ignore
+      setProposalCount(result.data);
+    }
   }
+
+  useEffect(() => {
+    const setProposalData = async () => {
+      await getProposalApprovals();
+      await getProposals();
+      await getNumOfProposals();
+    };
+    setProposalData();
+    const intervalId = setInterval(setProposalData, 5000);
+    return () => clearInterval(intervalId);
+  }, [selectedProposal]);
 
   async function approveProposal(proposalId: string) {
     setApproveProposalLoading(true);
@@ -310,10 +335,14 @@ export default function HomePage() {
       <div> Proposals </div>
 
       <Button onClick={createProposal} disabled={createProposalLoading}>
-        {createProposalLoading ? 'Loading...' : 'Create new proposals'}
+        {createProposalLoading ? 'Loading...' : 'Create new proposal'}
       </Button>
 
       <ProposalsWrapper>
+        <div className="flex-container proposal-data">
+          <h3 className="title">Number of proposals:</h3>
+          <span>{proposalCount}</span>
+        </div>
         <select
           value={selectedProposal ? selectedProposal.id : 'Select Proposal'}
           onChange={(e) =>
@@ -338,6 +367,10 @@ export default function HomePage() {
             <div className="flex-container">
               <h3 className="title">Author ID:</h3>
               <span>{selectedProposal.author_id}</span>
+            </div>
+            <div className="flex-container">
+              <h3 className="title">Number of approvals:</h3>
+              <span>{selectedProposalApprovals}</span>
             </div>
 
             <h3 className="title actions-title">Actions</h3>
