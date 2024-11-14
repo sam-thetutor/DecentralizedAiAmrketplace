@@ -232,6 +232,8 @@ export default function HomePage() {
       await getProposals();
     };
     setAllProposals();
+    const intervalId = setInterval(setAllProposals, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   async function getProposalDetails() {
