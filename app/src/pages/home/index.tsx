@@ -8,7 +8,7 @@ import {
   ResponseData,
   SubscriptionsClient,
 } from '@calimero-is-near/calimero-p2p-sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import {
   getWsSubscriptionsClient,
@@ -170,6 +170,8 @@ export default function HomePage() {
   >(null);
   const [proposalCount, setProposalCount] = useState<number>(0);
   const [approveProposalLoading, setApproveProposalLoading] = useState(false);
+  const [hasAlerted, setHasAlerted] = useState<boolean>(false);
+  const lastExecutedProposalRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
@@ -236,9 +238,45 @@ export default function HomePage() {
       });
     if (result?.error) {
       console.error('Error:', result.error);
+      setProposals([]);
     } else {
+      // @ts-ignore - we know the data structure has a nested data property
+      const proposalsData = result.data?.data || [];
+
+      if (selectedProposal && proposals.length > 0) {
+        const stillExists = proposalsData.some(
+          (proposal) => proposal.id === selectedProposal.id,
+        );
+
+        if (
+          !stillExists &&
+          lastExecutedProposalRef.current !== selectedProposal.id
+        ) {
+          window.alert(`Proposal with id: ${selectedProposal.id} was executed`);
+          lastExecutedProposalRef.current = selectedProposal.id;
+          setSelectedProposal(undefined);
+        }
+      }
+
+      setProposals(proposalsData);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedProposal) {
+      lastExecutedProposalRef.current = null;
+    }
+  }, [selectedProposal]);
+
+  const [approvers, setApprovers] = useState<string[]>([]);
+
+  const getApprovers = async () => {
+    if (selectedProposal) {
+      const result = await new ContextApiDataSource().getProposalApprovals(
+        selectedProposal.id,
+      );
       // @ts-ignore
-      setProposals(result.data.data);
+      setApprovers(result?.data.data ?? []);
     }
   };
 
@@ -273,6 +311,7 @@ export default function HomePage() {
       await getProposalApprovals();
       await getProposals();
       await getNumOfProposals();
+      await getApprovers();
     };
     setProposalData();
     const intervalId = setInterval(setProposalData, 5000);
@@ -382,7 +421,21 @@ export default function HomePage() {
               <h3 className="title">Number of approvals:</h3>
               <span>{selectedProposalApprovals}</span>
             </div>
-
+            <div className="">
+              <h3 className="title">Approvers:</h3>
+              {approvers.length !== 0 ? (
+                approvers.map((a, i) => (
+                  <>
+                    <br />
+                    <span key={a}>
+                      {i + 1}. {a}
+                    </span>
+                  </>
+                ))
+              ) : (
+                <span>No approvers</span>
+              )}
+            </div>
             <h3 className="title actions-title">Actions</h3>
             <div className="actions-headers highlight">
               <div>Scope</div>

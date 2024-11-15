@@ -53,8 +53,7 @@ export class ContextApiDataSource implements ContractApi {
       if (error) {
         return { error };
       }
-
-      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/${proposalId}/approvals/count`;
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/${proposalId}/approvals/users`;
 
       const response = await axios.get(apiEndpoint);
 
