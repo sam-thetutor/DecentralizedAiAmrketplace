@@ -1,18 +1,16 @@
+use calimero_sdk::app;
 use calimero_sdk::borsh::{BorshDeserialize, BorshSerialize};
+use calimero_sdk::env::ext::ProposalId;
 use calimero_sdk::env::{self};
+use calimero_sdk::serde::{Deserialize, Serialize};
 use calimero_sdk::types::Error;
-use calimero_sdk::{app, serde};
 use calimero_storage::collections::UnorderedMap;
 use calimero_storage::entities::Element;
 use calimero_storage::AtomicUnit;
-use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Deserialize)]
 #[serde(crate = "calimero_sdk::serde")]
-pub struct CreateProposalRequest {
-    proposal_id: String,
-    author: String,
-}
+pub struct CreateProposalRequest {}
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Deserialize)]
 #[serde(crate = "calimero_sdk::serde", rename_all = "camelCase")]
@@ -68,23 +66,26 @@ impl AppState {
         }
     }
 
-    pub fn create_new_proposal(&mut self, _request: CreateProposalRequest) -> Result<bool, Error> {
-        println!("Create new proposal: {:?}", _request);
-        let account_id = calimero_sdk::env::ext::AccountId("cali.near".to_string());
-        let amount = 1;
+    pub fn create_new_proposal(receiver: String) -> Result<env::ext::ProposalId, Error> {
+        env::log("env Call in wasm create new proposal");
+
+        println!("Call in wasm create new proposal {:?}", receiver);
+        let account_id = env::ext::AccountId("vuki.testnet".to_string());
+        let amount = 1_000_000_000_000_000_000_000;
         let proposal_id = Self::external()
             .propose()
             .transfer(account_id, amount)
             .send();
-
+        let log_message = format!("Proposal ID: {:?}", proposal_id);
+        env::log(&log_message);
         println!("Create new proposal with id: {:?}", proposal_id);
 
-        Ok(true)
+        Ok(proposal_id)
     }
 
-    pub fn approve_proposal(&mut self, _proposal_id: env::ext::ProposalId) -> Result<bool, Error> {
-        println!("Approve proposal: {:?}", _proposal_id);
-        // Self::external()
+    pub fn approve_proposal(proposal_id: ProposalId) -> Result<bool, Error> {
+        env::log(&format!("Approve proposal: {:?}", proposal_id));
+        let _ = Self::external().approve(proposal_id);
         Ok(true)
     }
 
@@ -92,15 +93,14 @@ impl AppState {
     pub fn get_proposal_messages(
         &self,
         // request: GetProposalMessagesRequest, I cannot to this??
-        proposal_id: String,
+        proposal_id: ProposalId,
     ) -> Result<Vec<Message>, Error> {
-        let proposal_id = env::ext::ProposalId(Self::string_to_u8_32(proposal_id.as_str()));
-
-        println!("Get messages for proposal: {:?}", proposal_id);
-
+        env::log(&format!("env Get messages for proposal: {:?}", proposal_id));
         let res = &self.messages.get(&proposal_id).unwrap();
-        println!("Messages: {:?}", res);
-
+        env::log(&format!(
+            "Get messages for proposal from storage: {:?}",
+            res
+        ));
         match res {
             Some(messages) => Ok(messages.clone()),
             None => Ok(vec![]),
@@ -110,12 +110,15 @@ impl AppState {
     pub fn send_proposal_messages(
         &mut self,
         // request: SendProposalMessageRequest, I cannot to this?? How to use camelCase?
-        proposal_id: String,
+        proposal_id: ProposalId,
         message: Message,
     ) -> Result<bool, Error> {
-        let proposal_id = env::ext::ProposalId(Self::string_to_u8_32(proposal_id.as_str()));
+        env::log(&format!(
+            "env send_proposal_messages id : {:?}",
+            proposal_id
+        ));
+        env::log(&format!("env send_proposal_messages msg: {:?}", message));
 
-        println!("Send message to proposal: {:?}", proposal_id);
         let proposal_messages = self.messages.get(&proposal_id).unwrap();
         match proposal_messages {
             Some(mut messages) => {
@@ -128,16 +131,5 @@ impl AppState {
             }
         }
         Ok(true)
-    }
-
-    fn string_to_u8_32(s: &str) -> [u8; 32] {
-        let mut array = [0u8; 32]; // Initialize array with 32 zeroes
-        let bytes = s.as_bytes(); // Convert the string to bytes
-
-        // Copy up to 32 bytes from the string slice into the array
-        let len = bytes.len().min(32);
-        array[..len].copy_from_slice(&bytes[..len]);
-
-        array
     }
 }

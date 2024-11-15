@@ -4,11 +4,16 @@ import {
   getAccessToken,
   getAppEndpointKey,
   getRefreshToken,
+  NodeEvent,
   ResponseData,
+  SubscriptionsClient,
 } from '@calimero-is-near/calimero-p2p-sdk';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { LogicApiDataSource } from '../../api/dataSource/LogicApiDataSource';
+import {
+  getWsSubscriptionsClient,
+  LogicApiDataSource,
+} from '../../api/dataSource/LogicApiDataSource';
 import {
   ApproveProposalRequest,
   ApproveProposalResponse,
@@ -17,8 +22,9 @@ import {
   GetProposalMessagesRequest,
   GetProposalMessagesResponse,
   SendProposalMessageRequest,
+  SendProposalMessageResponse,
 } from '../../api/clientApi';
-import { getStorageApplicationId } from '../../utils/node';
+import { getContextId, getStorageApplicationId } from '../../utils/node';
 import {
   clearApplicationId,
   getJWTObject,
@@ -314,7 +320,7 @@ export default function HomePage() {
   //       let currentValueInt = isNaN(parseInt(currentValue))
   //         ? 0
   //         : parseInt(currentValue);
-  //       setCount(currentValueInt);
+  //       console.log('currentValueInt', currentValueInt);
   //     }
   //   });
   // };
