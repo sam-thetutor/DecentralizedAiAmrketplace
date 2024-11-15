@@ -68,18 +68,13 @@ impl AppState {
 
     pub fn create_new_proposal(receiver: String) -> Result<env::ext::ProposalId, Error> {
         env::log("env Call in wasm create new proposal");
-
-        println!("Call in wasm create new proposal {:?}", receiver);
         let account_id = env::ext::AccountId("vuki.testnet".to_string());
         let amount = 1_000_000_000_000_000_000_000;
         let proposal_id = Self::external()
             .propose()
             .transfer(account_id, amount)
             .send();
-        let log_message = format!("Proposal ID: {:?}", proposal_id);
-        env::log(&log_message);
-        println!("Create new proposal with id: {:?}", proposal_id);
-
+        env::log(&format!("Create new proposal with id: {:?}", proposal_id));
         Ok(proposal_id)
     }
 
@@ -89,13 +84,8 @@ impl AppState {
         Ok(true)
     }
 
-    // Messages (discussion)
-    pub fn get_proposal_messages(
-        &self,
-        // request: GetProposalMessagesRequest, I cannot to this??
-        proposal_id: ProposalId,
-    ) -> Result<Vec<Message>, Error> {
-        env::log(&format!("env Get messages for proposal: {:?}", proposal_id));
+    pub fn get_proposal_messages(&self, proposal_id: ProposalId) -> Result<Vec<Message>, Error> {
+        env::log(&format!("Get messages for proposal: {:?}", proposal_id));
         let res = &self.messages.get(&proposal_id).unwrap();
         env::log(&format!(
             "Get messages for proposal from storage: {:?}",
@@ -109,15 +99,14 @@ impl AppState {
 
     pub fn send_proposal_messages(
         &mut self,
-        // request: SendProposalMessageRequest, I cannot to this?? How to use camelCase?
         proposal_id: ProposalId,
         message: Message,
     ) -> Result<bool, Error> {
         env::log(&format!(
-            "env send_proposal_messages id : {:?}",
+            "send_proposal_messages with id : {:?}",
             proposal_id
         ));
-        env::log(&format!("env send_proposal_messages msg: {:?}", message));
+        env::log(&format!("send_proposal_messages msg: {:?}", message));
 
         let proposal_messages = self.messages.get(&proposal_id).unwrap();
         match proposal_messages {
