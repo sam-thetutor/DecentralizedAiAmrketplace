@@ -68,7 +68,7 @@ impl AppState {
 
     pub fn create_new_proposal(receiver: String) -> Result<env::ext::ProposalId, Error> {
         env::log("env Call in wasm create new proposal");
-        let account_id = env::ext::AccountId("vuki.testnet".to_string());
+        let account_id = env::ext::AccountId(receiver);
         let amount = 1_000_000_000_000_000_000_000;
         let proposal_id = Self::external()
             .propose()
