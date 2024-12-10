@@ -52,14 +52,37 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 [[package]]
 name = "calimero-sdk"
 version = "0.1.0"
+dependencies = [
+ "borsh",
+ "bs58",
+ "calimero-sdk-macros 0.1.0",
+ "cfg-if",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "calimero-sdk"
+version = "0.1.0"
 source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
 dependencies = [
  "borsh",
  "bs58",
- "calimero-sdk-macros",
+ "calimero-sdk-macros 0.1.0 (git+https://github.com/calimero-network/core?branch=master)",
  "cfg-if",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "calimero-sdk-macros"
+version = "0.1.0"
+dependencies = [
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "thiserror",
 ]
 
 [[package]]
@@ -80,7 +103,7 @@ version = "0.1.0"
 source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
 dependencies = [
  "borsh",
- "calimero-sdk",
+ "calimero-sdk 0.1.0 (git+https://github.com/calimero-network/core?branch=master)",
  "calimero-storage-macros",
  "eyre",
  "fixedstr",
@@ -282,8 +305,9 @@ dependencies = [
 name = "proxy-contract-demo"
 version = "0.1.0"
 dependencies = [
- "calimero-sdk",
+ "calimero-sdk 0.1.0",
  "calimero-storage",
+ "hex",
  "serde_json",
 ]
 

@@ -144,6 +144,18 @@ impl AppState {
                         as u32,
                 )
                 .send(),
+            "DeleteProposal" => Self::external()
+                .propose()
+                .delete(ProposalId(
+                    hex::decode(
+                        request.params["proposal_id"]
+                            .as_str()
+                            .ok_or_else(|| Error::msg("proposal_id is required"))?,
+                    )?
+                    .try_into()
+                    .map_err(|_| Error::msg("Invalid proposal ID length"))?,
+                ))
+                .send(),
             _ => return Err(Error::msg("Invalid action type")),
         };
 

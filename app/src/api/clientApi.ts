@@ -31,6 +31,7 @@ export enum ProposalActionType {
   SetNumApprovals = 'SetNumApprovals',
   SetActiveProposalsLimit = 'SetActiveProposalsLimit',
   SetContextValue = 'SetContextValue',
+  DeleteProposal = 'DeleteProposal',
 }
 
 export type FormActionType =
@@ -67,6 +68,7 @@ export interface CreateProposalRequest {
     active_proposals_limit?: number;
     key?: string;
     value?: string;
+    proposal_id?: string;
   };
 }
 
@@ -101,4 +103,5 @@ export interface ClientApi {
   approveProposal(
     request: ApproveProposalRequest,
   ): ApiResponse<ApproveProposalResponse>;
+  deleteProposal(proposalId: string): ApiResponse<void>;
 }

@@ -36,6 +36,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
 import { ApprovalsCount, ContractProposal } from '../../api/contractApi';
+import { Buffer } from 'buffer';
+import bs58 from 'bs58';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -531,6 +533,39 @@ export default function HomePage() {
   //   observeNodeEvents();
   // }, []);
 
+  const deleteProposal = async (proposalId: string) => {
+    try {
+      // Decode the base58 proposal ID to bytes
+      const bytes = bs58.decode(proposalId);
+      // Convert to hex string
+      const proposalIdHex = Buffer.from(bytes).toString('hex');
+
+      const request: CreateProposalRequest = {
+        action_type: ProposalActionType.DeleteProposal,
+        params: {
+          proposal_id: proposalIdHex,
+        },
+      };
+      const result: ResponseData<CreateProposalResponse> =
+        await new LogicApiDataSource().createProposal(request);
+
+      if (result?.error) {
+        console.error('Error:', result.error);
+        window.alert(`${result.error.message}`);
+        return;
+      }
+
+      if (result?.data) {
+        window.alert(`Delete proposal created successfully`);
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Error deleting proposal:', error);
+      window.alert(`Error deleting proposal: ${error.message}`);
+    }
+  };
+
   const logout = () => {
     clearAppEndpoint();
     clearJWT();
@@ -634,6 +669,12 @@ export default function HomePage() {
       minApprovals: '',
       maxActiveProposals: '',
     });
+  };
+
+  // Add this helper function to check if current user is the author
+  const isCurrentUserAuthor = (proposal: ContractProposal): boolean => {
+    const currentUserKey = getJWTObject()?.executor_public_key;
+    return proposal.author_id === currentUserKey;
   };
 
   return (
@@ -1027,6 +1068,15 @@ export default function HomePage() {
               >
                 Send Message
               </ButtonSm>
+              {isCurrentUserAuthor(selectedProposal) && (
+                <ButtonSm
+                  onClick={() => {
+                    deleteProposal(selectedProposal.id);
+                  }}
+                >
+                  Delete Proposal
+                </ButtonSm>
+              )}
             </div>
           </div>
         )}
