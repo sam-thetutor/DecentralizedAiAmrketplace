@@ -52,23 +52,11 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 [[package]]
 name = "calimero-sdk"
 version = "0.1.0"
+source = "git+https://github.com/calimero-network/core?branch=master#664abd97b09f92241cc74184d340a578ad1b491c"
 dependencies = [
  "borsh",
  "bs58",
- "calimero-sdk-macros 0.1.0",
- "cfg-if",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "calimero-sdk"
-version = "0.1.0"
-source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
-dependencies = [
- "borsh",
- "bs58",
- "calimero-sdk-macros 0.1.0 (git+https://github.com/calimero-network/core?branch=master)",
+ "calimero-sdk-macros",
  "cfg-if",
  "serde",
  "serde_json",
@@ -77,18 +65,7 @@ dependencies = [
 [[package]]
 name = "calimero-sdk-macros"
 version = "0.1.0"
-dependencies = [
- "prettyplease",
- "proc-macro2",
- "quote",
- "syn",
- "thiserror",
-]
-
-[[package]]
-name = "calimero-sdk-macros"
-version = "0.1.0"
-source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
+source = "git+https://github.com/calimero-network/core?branch=master#664abd97b09f92241cc74184d340a578ad1b491c"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -100,10 +77,10 @@ dependencies = [
 [[package]]
 name = "calimero-storage"
 version = "0.1.0"
-source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
+source = "git+https://github.com/calimero-network/core?branch=master#664abd97b09f92241cc74184d340a578ad1b491c"
 dependencies = [
  "borsh",
- "calimero-sdk 0.1.0 (git+https://github.com/calimero-network/core?branch=master)",
+ "calimero-sdk",
  "calimero-storage-macros",
  "eyre",
  "fixedstr",
@@ -118,7 +95,7 @@ dependencies = [
 [[package]]
 name = "calimero-storage-macros"
 version = "0.1.0"
-source = "git+https://github.com/calimero-network/core?branch=master#f3066f6e604579a91efa0422c2241d551c62a4e5"
+source = "git+https://github.com/calimero-network/core?branch=master#664abd97b09f92241cc74184d340a578ad1b491c"
 dependencies = [
  "borsh",
  "quote",
@@ -248,9 +225,9 @@ checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
 
 [[package]]
 name = "libc"
-version = "0.2.167"
+version = "0.2.168"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09d6582e104315a817dff97f75133544b2e094ee22447d2acf4a74e189ba06fc"
+checksum = "5aaeb2981e0606ca11d79718f8bb01164f1d6ed75080182d3abf017e6d244b6d"
 
 [[package]]
 name = "memchr"
@@ -305,7 +282,7 @@ dependencies = [
 name = "proxy-contract-demo"
 version = "0.1.0"
 dependencies = [
- "calimero-sdk 0.1.0",
+ "calimero-sdk",
  "calimero-storage",
  "hex",
  "serde_json",
@@ -358,18 +335,18 @@ checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 
 [[package]]
 name = "serde"
-version = "1.0.215"
+version = "1.0.216"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6513c1ad0b11a9376da888e3e0baa0077f1aed55c17f50e7b2397136129fb88f"
+checksum = "0b9781016e935a97e8beecf0c933758c97a5520d32930e460142b4cd80c6338e"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.215"
+version = "1.0.216"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
+checksum = "46f859dbbf73865c6627ed570e78961cd3ac92407a2d117204c49232485da55e"
 dependencies = [
  "proc-macro2",
  "quote",

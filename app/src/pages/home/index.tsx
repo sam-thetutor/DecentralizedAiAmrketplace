@@ -896,7 +896,11 @@ export default function HomePage() {
                         type="text"
                         value={proposalForm.contextVariables[0].value}
                         onChange={(e) =>
-                          handleContextVariableChange(0, 'value', e.target.value)
+                          handleContextVariableChange(
+                            0,
+                            'value',
+                            e.target.value,
+                          )
                         }
                         required
                       />
