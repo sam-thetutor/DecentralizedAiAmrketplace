@@ -19,6 +19,7 @@ export default function ChangeApprovalsNeededForm({
         type="number"
         id="minApprovals"
         name="minApprovals"
+        placeholder='2'
         value={proposalForm.minApprovals}
         onChange={handleInputChange}
         min="1"

@@ -1,20 +1,32 @@
-import React from "react";
-import { ButtonSm, FormGroup, ProposalData } from "./CreateProposalPopup";
+import React from 'react';
+import { ButtonSm, FormGroup, ProposalData } from './CreateProposalPopup';
+import { styled } from 'styled-components';
+
+const ScrollWrapper = styled.div`
+  max-height: 150px;
+  overflow-y: auto;
+`;
 
 interface CrossContractCallFormProps {
-    proposalForm: ProposalData;
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    handleArgumentChange: (index: number, field: "key" | "value", value: string) => void;
-    removeArgument: (index: number) => void;
-    addArgument: () => void;
+  proposalForm: ProposalData;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleArgumentChange: (
+    index: number,
+    field: 'key' | 'value',
+    value: string,
+  ) => void;
+  removeArgument: (index: number) => void;
+  addArgument: () => void;
 }
 
 export default function CrossContractCallForm({
-    proposalForm,
-    handleInputChange,
-    handleArgumentChange,
-    removeArgument,
-    addArgument
+  proposalForm,
+  handleInputChange,
+  handleArgumentChange,
+  removeArgument,
+  addArgument,
 }: CrossContractCallFormProps) {
   return (
     <>
@@ -37,6 +49,7 @@ export default function CrossContractCallForm({
           type="text"
           id="contractId"
           name="contractId"
+          placeholder="contract address"
           value={proposalForm.contractId}
           onChange={handleInputChange}
           required
@@ -48,6 +61,7 @@ export default function CrossContractCallForm({
           type="text"
           id="methodName"
           name="methodName"
+          placeholder="create_post"
           value={proposalForm.methodName}
           onChange={handleInputChange}
           required
@@ -68,62 +82,52 @@ export default function CrossContractCallForm({
           required
         />
       </FormGroup>
-      {proposalForm.protocol === 'NEAR' && (
-        <FormGroup>
-          <label htmlFor="gas">Gas</label>
-          <input
-            type="text"
-            id="gas"
-            name="gas"
-            value={proposalForm.gas}
-            onChange={handleInputChange}
-            placeholder="30000000000000"
-            required
-          />
-        </FormGroup>
-      )}
       <FormGroup>
         <label>Arguments</label>
-        {proposalForm.arguments.map((arg: {key: string, value: string}, index: number) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              gap: '1rem',
-              alignItems: 'flex-end',
-            }}
-          >
-            <FormGroup>
-              <label>Key</label>
-              <input
-                type="text"
-                value={arg.key}
-                onChange={(e) =>
-                  handleArgumentChange(index, 'key', e.target.value)
-                }
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <label>Value</label>
-              <input
-                type="text"
-                value={arg.value}
-                onChange={(e) =>
-                  handleArgumentChange(index, 'value', e.target.value)
-                }
-                required
-              />
-            </FormGroup>
-            <ButtonSm
-              type="button"
-              onClick={() => removeArgument(index)}
-              style={{ background: '#666', marginBottom: '1rem' }}
-            >
-              Remove
-            </ButtonSm>
-          </div>
-        ))}
+        <ScrollWrapper>
+          {proposalForm.arguments.map(
+            (arg: { key: string; value: string }, index: number) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'flex-end',
+                }}
+              >
+                <FormGroup>
+                  <input
+                    type="text"
+                    placeholder="key"
+                    value={arg.key}
+                    onChange={(e) =>
+                      handleArgumentChange(index, 'key', e.target.value)
+                    }
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <input
+                    type="text"
+                    placeholder="value"
+                    value={arg.value}
+                    onChange={(e) =>
+                      handleArgumentChange(index, 'value', e.target.value)
+                    }
+                    required
+                  />
+                </FormGroup>
+                <ButtonSm
+                  type="button"
+                  onClick={() => removeArgument(index)}
+                  style={{ background: '#666', marginBottom: '1rem' }}
+                >
+                  Remove
+                </ButtonSm>
+              </div>
+            ),
+          )}
+        </ScrollWrapper>
         <ButtonSm type="button" onClick={addArgument}>
           Add Argument
         </ButtonSm>

@@ -22,11 +22,16 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background-color: #1e1e1e;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
   color: white;
+
+  h2 {
+  padding-bottom: 0.5rem;
+  margin: 0;
+  }
 `;
 
 export const FormGroup = styled.div`
@@ -76,7 +81,6 @@ export interface ProposalData {
   methodName: string;
   arguments: { key: string; value: string }[];
   deposit: string;
-  gas: string;
   receiverId: string;
   amount: string;
   contextVariables: { key: string; value: string }[];
@@ -100,7 +104,6 @@ export default function CreateProposalPopup({
     methodName: '',
     arguments: [{ key: '', value: '' }],
     deposit: '',
-    gas: '',
     receiverId: '',
     amount: '',
     contextVariables: [{ key: '', value: '' }],
@@ -197,7 +200,6 @@ export default function CreateProposalPopup({
       methodName: '',
       arguments: [{ key: '', value: '' }],
       deposit: '',
-      gas: '',
       receiverId: '',
       amount: '',
       contextVariables: [{ key: '', value: '' }],

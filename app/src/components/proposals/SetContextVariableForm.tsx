@@ -1,5 +1,11 @@
 import React from 'react';
 import { ButtonSm, FormGroup, ProposalData } from './CreateProposalPopup';
+import { styled } from 'styled-components';
+
+const ScrollWrapper = styled.div`
+  max-height: 150px;
+  overflow-y: auto;
+`
 
 interface SetContextVariableFormProps {
     proposalForm: ProposalData;
@@ -20,6 +26,7 @@ export default function SetContextVariableForm({
 }: SetContextVariableFormProps) {
   return (
     <>
+    <ScrollWrapper>
       {proposalForm.contextVariables.map((variable: { key: string; value: string }, index: number) => (
         <div
           key={index}
@@ -30,9 +37,9 @@ export default function SetContextVariableForm({
           }}
         >
           <FormGroup>
-            <label>Key</label>
             <input
               type="text"
+              placeholder='key'
               value={variable.key}
               onChange={(e) =>
                 handleContextVariableChange(index, 'key', e.target.value)
@@ -41,9 +48,9 @@ export default function SetContextVariableForm({
             />
           </FormGroup>
           <FormGroup>
-            <label>Value</label>
             <input
               type="text"
+              placeholder='value'
               value={variable.value}
               onChange={(e) =>
                 handleContextVariableChange(index, 'value', e.target.value)
@@ -60,6 +67,7 @@ export default function SetContextVariableForm({
           </ButtonSm>
         </div>
       ))}
+      </ScrollWrapper>
       <ButtonSm type="button" onClick={addContextVariable}>
         Add Variable
       </ButtonSm>

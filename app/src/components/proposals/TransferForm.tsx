@@ -20,6 +20,7 @@ export default function TransferForm({
           type="text"
           id="receiverId"
           name="receiverId"
+          placeholder='account address'
           value={proposalForm.receiverId}
           onChange={handleInputChange}
           required
@@ -31,6 +32,7 @@ export default function TransferForm({
           type="text"
           id="amount"
           name="amount"
+          placeholder='10'
           value={proposalForm.amount}
           onChange={handleInputChange}
           required

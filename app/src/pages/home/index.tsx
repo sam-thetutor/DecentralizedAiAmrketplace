@@ -242,7 +242,7 @@ export default function HomePage() {
               deposit: formData.deposit || '0',
               gas:
                 formData.protocol === 'NEAR'
-                  ? formData.gas || '30000000000000'
+                  ? '30000000000000'
                   : '0',
             },
           };
