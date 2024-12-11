@@ -872,57 +872,36 @@ export default function HomePage() {
 
               {proposalForm.actionType === 'Set context variable' && (
                 <>
-                  {proposalForm.contextVariables.map((variable, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        gap: '1rem',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <FormGroup>
-                        <label>Key</label>
-                        <input
-                          type="text"
-                          value={variable.key}
-                          onChange={(e) =>
-                            handleContextVariableChange(
-                              index,
-                              'key',
-                              e.target.value,
-                            )
-                          }
-                          required
-                        />
-                      </FormGroup>
-                      <FormGroup>
-                        <label>Value</label>
-                        <input
-                          type="text"
-                          value={variable.value}
-                          onChange={(e) =>
-                            handleContextVariableChange(
-                              index,
-                              'value',
-                              e.target.value,
-                            )
-                          }
-                          required
-                        />
-                      </FormGroup>
-                      <ButtonSm
-                        type="button"
-                        onClick={() => removeContextVariable(index)}
-                        style={{ background: '#666', marginBottom: '1rem' }}
-                      >
-                        Remove
-                      </ButtonSm>
-                    </div>
-                  ))}
-                  <ButtonSm type="button" onClick={addContextVariable}>
-                    Add Variable
-                  </ButtonSm>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '1rem',
+                      alignItems: 'flex-end',
+                    }}
+                  >
+                    <FormGroup>
+                      <label>Key</label>
+                      <input
+                        type="text"
+                        value={proposalForm.contextVariables[0].key}
+                        onChange={(e) =>
+                          handleContextVariableChange(0, 'key', e.target.value)
+                        }
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        value={proposalForm.contextVariables[0].value}
+                        onChange={(e) =>
+                          handleContextVariableChange(0, 'value', e.target.value)
+                        }
+                        required
+                      />
+                    </FormGroup>
+                  </div>
                 </>
               )}
 
