@@ -49,6 +49,7 @@ export interface ContractApi {
   getContextDetails(contextId: String): ApiResponse<ContextDetails>;
   getContextMembers(): ApiResponse<Members[]>;
   getContextMembersCount(): ApiResponse<number>;
+  deleteProposal(proposalId: string): ApiResponse<void>;
 }
 
 // async removeProposal(proposalId: String): ApiResponse<boolean> {
