@@ -41,6 +41,7 @@ import bs58 from 'bs58';
 import CreateProposalPopup, {
   ProposalData,
 } from '../../components/proposals/CreateProposalPopup';
+import Actions from '../../components/proposal/Actions';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -579,20 +580,7 @@ export default function HomePage() {
               )}
             </div>
             <h3 className="title actions-title">Actions</h3>
-            <div className="actions-headers highlight">
-              <div>Scope</div>
-              <div>Amount</div>
-              <div>Receiver ID</div>
-            </div>
-            <div>
-              {selectedProposal.actions.map((action, index) => (
-                <div key={index} className="actions-headers">
-                  <div>{action.scope}</div>
-                  <div>{action.params.amount}</div>
-                  <div>{action.params.receiver_id}</div>
-                </div>
-              ))}
-            </div>
+            <Actions actions={selectedProposal.actions} />
             <div className="flex-container center">
               <ButtonSm onClick={() => approveProposal(selectedProposal.id)}>
                 {approveProposalLoading ? 'Loading...' : 'Approve proposal'}
