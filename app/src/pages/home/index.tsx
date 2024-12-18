@@ -35,7 +35,7 @@ import {
 } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
-import { ApprovalsCount, ContractProposal } from '../../api/contractApi';
+import { ApprovalsCount, ContextVariables, ContractProposal } from '../../api/contractApi';
 import { Buffer } from 'buffer';
 import bs58 from 'bs58';
 import CreateProposalPopup, {
@@ -153,6 +153,25 @@ const ProposalsWrapper = styled.div`
   }
 `;
 
+const StyledTable = styled.table`
+  th, td {
+    text-align: center;
+    padding: 8px;
+  }
+`;
+
+const ContextVariablesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .context-variables {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+  }
+`;
+
 export default function HomePage() {
   const navigate = useNavigate();
   const url = getAppEndpointKey();
@@ -170,7 +189,7 @@ export default function HomePage() {
   const [hasAlerted, setHasAlerted] = useState<boolean>(false);
   const lastExecutedProposalRef = useRef<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [contextVariables, setContextVariables] = useState<ContextVariables[]>([]);
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
       navigate('/auth');
@@ -398,6 +417,17 @@ export default function HomePage() {
     }
   }
 
+  async function getContextVariables() {
+    const result: ResponseData<ContextVariables[]> =
+      await new ContextApiDataSource().getContextVariables();
+    if (result?.error) {
+      console.error('Error:', result.error);
+    } else {
+      // @ts-ignore
+      setContextVariables(result.data);
+    }
+  }
+
   useEffect(() => {
     const setProposalData = async () => {
       await getProposalApprovals();
@@ -511,7 +541,38 @@ export default function HomePage() {
       <TextStyle>
         <span>Blockchain proposals demo application</span>
       </TextStyle>
-
+      <ContextVariablesContainer>
+        <div className="flex-container">
+          <ButtonSm onClick={() => getContextVariables()}>
+            Get Context Variables
+          </ButtonSm>
+        </div>
+        <div className="flex-container context-variables">
+          <h3 className="title">Context variables:</h3>
+          {contextVariables.length > 0 ? (
+            <div>
+              <StyledTable>
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contextVariables.map((variable) => (
+                    <tr key={variable.key}>
+                      <td>{variable.key}</td>
+                      <td>{variable.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </StyledTable>
+            </div>
+          ) : (
+            <div>No context variables</div>
+          )}
+        </div>
+      </ContextVariablesContainer>
       <div> Proposals </div>
 
       <Button
