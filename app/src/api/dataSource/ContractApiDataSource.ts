@@ -133,7 +133,7 @@ export class ContextApiDataSource implements ContractApi {
       // Convert both key and value from Vec<u8> to string
       const parsedData = response.data.data.map((item: any) => ({
         key: new TextDecoder().decode(new Uint8Array(item.key)),
-        value: new TextDecoder().decode(new Uint8Array(item.value))
+        value: new TextDecoder().decode(new Uint8Array(item.value)),
       }));
 
       return {

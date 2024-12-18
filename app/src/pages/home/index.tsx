@@ -35,7 +35,11 @@ import {
 } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { ContextApiDataSource } from '../../api/dataSource/ContractApiDataSource';
-import { ApprovalsCount, ContextVariables, ContractProposal } from '../../api/contractApi';
+import {
+  ApprovalsCount,
+  ContextVariables,
+  ContractProposal,
+} from '../../api/contractApi';
 import { Buffer } from 'buffer';
 import bs58 from 'bs58';
 import CreateProposalPopup, {
@@ -154,7 +158,8 @@ const ProposalsWrapper = styled.div`
 `;
 
 const StyledTable = styled.table`
-  th, td {
+  th,
+  td {
     text-align: center;
     padding: 8px;
   }
@@ -189,7 +194,9 @@ export default function HomePage() {
   const [hasAlerted, setHasAlerted] = useState<boolean>(false);
   const lastExecutedProposalRef = useRef<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [contextVariables, setContextVariables] = useState<ContextVariables[]>([]);
+  const [contextVariables, setContextVariables] = useState<ContextVariables[]>(
+    [],
+  );
   useEffect(() => {
     if (!url || !applicationId || !accessToken || !refreshToken) {
       navigate('/auth');
