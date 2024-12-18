@@ -58,19 +58,9 @@ export default function SetContextVariableForm({
               required
             />
           </FormGroup>
-          <ButtonSm
-            type="button"
-            onClick={() => removeContextVariable(index)}
-            style={{ background: '#666', marginBottom: '1rem' }}
-          >
-            Remove
-          </ButtonSm>
         </div>
       ))}
       </ScrollWrapper>
-      <ButtonSm type="button" onClick={addContextVariable}>
-        Add Variable
-      </ButtonSm>
     </>
   );
 }

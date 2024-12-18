@@ -76,7 +76,6 @@ export const ButtonSm = styled.button`
 
 export interface ProposalData {
   actionType: string;
-  protocol: string;
   contractId: string;
   methodName: string;
   arguments: { key: string; value: string }[];
@@ -99,7 +98,6 @@ export default function CreateProposalPopup({
 }: CreateProposalPopupProps) {
   const [proposalForm, setProposalForm] = useState({
     actionType: 'Cross contract call',
-    protocol: 'NEAR',
     contractId: '',
     methodName: '',
     arguments: [{ key: '', value: '' }],
@@ -195,7 +193,6 @@ export default function CreateProposalPopup({
 
     setProposalForm({
       actionType: 'Cross contract call',
-      protocol: 'NEAR',
       contractId: '',
       methodName: '',
       arguments: [{ key: '', value: '' }],
