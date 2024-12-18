@@ -241,10 +241,7 @@ export default function HomePage() {
               method_name: formData.methodName,
               args: JSON.stringify(argsObject),
               deposit: formData.deposit || '0',
-              gas:
-                formData.protocol === 'NEAR'
-                  ? '30000000000000'
-                  : '0',
+              gas: formData.protocol === 'NEAR' ? '30000000000000' : '0',
             },
           };
 
