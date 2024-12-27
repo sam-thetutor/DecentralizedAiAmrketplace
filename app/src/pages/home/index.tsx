@@ -162,6 +162,8 @@ const StyledTable = styled.table`
   td {
     text-align: center;
     padding: 8px;
+    max-width: 200px;
+    overflow-wrap: break-word;
   }
 `;
 
