@@ -263,13 +263,12 @@ export default function HomePage() {
           );
 
           request = {
-            action_type: 'ExternalFunctionCall',
+            action_type: ProposalActionType.ExternalFunctionCall,
             params: {
               receiver_id: formData.contractId,
               method_name: formData.methodName,
               args: JSON.stringify(argsObject),
               deposit: formData.deposit || '0',
-              gas: formData.protocol === 'NEAR' ? '30000000000000' : '0',
             },
           };
 

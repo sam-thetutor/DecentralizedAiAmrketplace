@@ -70,15 +70,10 @@ impl AppState {
                     .as_str()
                     .ok_or_else(|| Error::msg("deposit is required"))?
                     .parse::<u128>()?;
-                let gas = request.params["gas"]
-                    .as_str()
-                    .map(|g| g.parse::<u64>())
-                    .transpose()?
-                    .unwrap_or(30_000_000_000_000);
 
                 env::log(&format!(
-                    "Parsed values: receiver_id={}, method_name={}, args={}, deposit={}, gas={}",
-                    receiver_id, method_name, args, deposit, gas
+                    "Parsed values: receiver_id={}, method_name={}, args={}, deposit={}",
+                    receiver_id, method_name, args, deposit
                 ));
 
                 Self::external()
@@ -88,7 +83,6 @@ impl AppState {
                         method_name.to_string(),
                         args.to_string(),
                         deposit,
-                        gas,
                     )
                     .send()
             }
