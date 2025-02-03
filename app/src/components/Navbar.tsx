@@ -77,7 +77,7 @@ const Navbar = () => {
       <NavContent>
         <Link to="/home">
           {/* <Logo src={CalimeroLogo} alt="Calimero Logo" /> */}
-          AgentRouter
+          DeRoM
         </Link>
         <ButtonGroup>
           <NavButton to="/proposals">Proposals</NavButton>

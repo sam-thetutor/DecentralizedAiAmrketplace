@@ -1,55 +1,71 @@
-# Core App Template
 
-## Logic
+# DeRoM: Distributed & Sharded AI Network
 
-```bash title="Terminal"
-cd logic
-```
+DeRoM is the world's first distributed and sharded AI network on the Internet Computer blockchain and utilizing Calimero network for its consensus mechanism, designed as an open inference platform that coordinates specialized AI models through on-chain economic incentives.
 
-```bash title="Terminal"
-chmod +x ./build.sh
-```
+## Overview
 
-```bash title="Terminal"
-./build.sh
-```
+Rather than pursuing a monolithic design, DeRoM creates a market of highly specialized models that compute outputs off-chain and coordinate to answer user queries for economic rewards on-chain. The network leverages sharding techniques to distribute functionalities across different AI models, with each shard specializing in domains like:
 
-```bash title="Terminal"
-./release.sh ./res/logic.wasm "Test Name123" "0.0.1" "-" "-" "-" calimero-package-manager.testnet
-```
-
-## App
-
-```bash title="Terminal"
-cd app
-```
-
-```bash title="Terminal"
-pnpm install
-```
-
-```bash title="Terminal"
-pnpm build
-```
-
-```bash title="Terminal"
-pnpm dev
-```
-
-Open app in browser and connect to running node.
-
-For more information how to build app check our docs:
-https://calimero-network.github.io/build/quickstart
+- Algebra
+- Language Translation
+- Programming
+- Domain-specific tasks
 
 
+### Key Components
 
-application_id = 9HHTg1hvhTqz6sJyszB6jNZTbWDeX1pVu7jsDrN3bBBm
-contexct_id =ESCfjwRt6KVoZyzKzpizHVXXVrKtZcRLx4wr1NYGmtBW
-context_identity=2D33T5EdqPhkCj3aTYru9ERFBT25WaZXZpomsyiXz9LW
+1. **Users**
+   - Submit queries through the frontend to the smart contract canister
 
-context invite ESCfjwRt6KVoZyzKzpizHVXXVrKtZcRLx4wr1NYGmtBW 2D33T5EdqPhkCj3aTYru9ERFBT25WaZXZpomsyiXz9LW
+2. **Routers**
+   - Advanced LLMs that analyze and decompose user queries
+   - Route tasks to appropriate specialized models
+   - Can act as users to create complex query chains
 
+3. **Models**
+   - Specialized AI models for specific tasks
+   - Execute computations off-chain
+   - Return results through the smart contract
+   - Earn rewards for successful task completion
 
-9VUWUCGAcbc6ncJXFF8yGWYCQ6oXT8jLQYAXkwxQaDTKHQfv25SiQGv6mviNs5BHddR64HL9fnk3LHqK51cgn33hthP892VPYW2pzwpQ9zxY9bKgjn7fhyo9rX3BbcEcGjhnWw539Z1y54PpkFSFzj5r
+4. **Smart Contracts**
+   - Manage token economics
+   - Handle task assignment
+   - Process payments
+   - Coordinates the queries and responses between the router and the models
 
-9VUWUCGAcbc6ncJXFF8yGWYCQ6oXT8jLQYAXkwxQaDTJtKHjdNF8aBYE6ngHmZ2zBixWk8LcmTUqEAUid9Rn7Lm1MiFHf7NZWnHNsV4cyfLpy49pQx7xwrcnmGEzZwnA2c5NZTbVEEd4LQoaN6wpowUL
+### How It Works
+
+Modals are added to the marketplace through proposals facilitaed by the Calimero network.
+
+AI model owners propose to add their models to the marketplace through proposals facilitaed by the Calimero network.
+
+Once the model is added to the marketplace, it becomes a part of the wide decentralized AI network.
+
+- Users submit queries to the router through the smart contract canister.
+
+- When the user submits a query, the router analyzes the query and determines the appropriate models to use. The router will then route the query to the appropriate models.
+
+The models will then compute the query off-chain and return the response to the user through the smart contract canister.
+
+The model will then be rewarded for their work by the user in the form of the native token of the Internet Computer blockchain.
+
+## Vision
+
+DeRoM aims to create the infrastructure for trustless AI agent coordination through:
+
+- Standardized protocols for agent communication
+- Economic incentives for reliable computation
+- Transparent on-chain governance
+- Modular scalability for diverse AI capabilities
+
+## Features
+
+- Distributed AI computation
+- On-chain economic incentives
+- Multi-step query resolution
+- Specialized model marketplace
+- Transparent task routing
+- Scalable architecture
+

@@ -143,7 +143,6 @@ actor class Backend() = this {
     };
 
     //respond to the task
-
     public shared({caller}) func respond(output:Text,taskId:Nat):async Result.Result<Text,Text>{
     //only the agent which was directed to respond to the task can respond
     switch(tasksHashMap.get(taskId)){
@@ -158,7 +157,6 @@ actor class Backend() = this {
             //add the response to the responsesHashMap
             responsesHashMap.put(taskId, {output = output; from = caller; callbackId = task.callbackId});
 
-
             switch(metadataHashMap.get(task.to)){
                 case(null){
                     return #err("Agent not found");
@@ -166,6 +164,10 @@ actor class Backend() = this {
                 case(?agent){
                     let newReputation = agent.reputation + 1;
                     metadataHashMap.put(task.to, {agent with reputation = newReputation});
+
+                    // Reward the agent for completing the task
+                    let currentBalance = getBalance(caller);
+                    balanceHashMap.put(caller, currentBalance + agent.Price);
                 };
             };
             //return the response
