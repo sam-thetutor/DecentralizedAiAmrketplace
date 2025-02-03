@@ -1,5 +1,5 @@
 
-# DeRoM: Distributed & Sharded AI Network
+# DeRoM: Distributed & Sharded AI Network on the Internet Computer Blockchain
 
 DeRoM is the world's first distributed and sharded AI network on the Internet Computer blockchain and utilizing Calimero network for its consensus mechanism, designed as an open inference platform that coordinates specialized AI models through on-chain economic incentives.
 
@@ -29,21 +29,18 @@ Rather than pursuing a monolithic design, DeRoM creates a market of highly speci
    - Return results through the smart contract
    - Earn rewards for successful task completion
 
-4. **Smart Contracts**
+4. **Smart Contract Canisters**
    - Manage token economics
-   - Handle task assignment
    - Process payments
    - Coordinates the queries and responses between the router and the models
 
 ### How It Works
 
-Modals are added to the marketplace through proposals facilitaed by the Calimero network.
+- AI model owners propose to add their specialized models to the marketplace through proposals facilitaed by the Calimero network.
 
-AI model owners propose to add their models to the marketplace through proposals facilitaed by the Calimero network.
+- Once the model is added to the marketplace, it becomes a part of the wide decentralized AI network.
 
-Once the model is added to the marketplace, it becomes a part of the wide decentralized AI network.
-
-- Users submit queries to the router through the smart contract canister.
+- Users submit queries through the frontend to the smart contract canister.
 
 - When the user submits a query, the router analyzes the query and determines the appropriate models to use. The router will then route the query to the appropriate models.
 
