@@ -8,10 +8,10 @@ interface ActionsDropdownProps {
 
 export enum ActionTypes {
   CROSS_CONTRACT_CALL = 'Cross contract call',
-  TRANSFER = 'Transfer',
-  SET_CONTEXT_VARIABLE = 'Set context variable',
+  // TRANSFER = 'Transfer',
+  // SET_CONTEXT_VARIABLE = 'Set context variable',
   CHANGE_APPROVALS_NEEDED = 'Change number of approvals needed',
-  CHANGE_MAX_ACTIVE_PROPOSALS = 'Change number of maximum active proposals',
+  // CHANGE_MAX_ACTIVE_PROPOSALS = 'Change number of maximum active proposals',
 }
 
 export const actionTypes = [
@@ -19,22 +19,22 @@ export const actionTypes = [
     id: 'CROSS_CONTRACT_CALL',
     label: 'Cross contract call',
   },
-  {
-    id: 'TRANSFER',
-    label: 'Transfer',
-  },
-  {
-    id: 'SET_CONTEXT_VARIABLE',
-    label: 'Set context variable',
-  },
+  // {
+  //   id: 'TRANSFER',
+  //   label: 'Transfer',
+  // },
+  // {
+  //   id: 'SET_CONTEXT_VARIABLE',
+  //   label: 'Set context variable',
+  // },
   {
     id: 'CHANGE_APPROVALS_NEEDED',
     label: 'Change number of approvals needed',
   },
-  {
-    id: 'CHANGE_MAX_ACTIVE_PROPOSALS',
-    label: 'Change number of maximum active proposals',
-  },
+  // {
+  //   id: 'CHANGE_MAX_ACTIVE_PROPOSALS',
+  //   label: 'Change number of maximum active proposals',
+  // },
 ];
 
 export default function ActionsDropdown({

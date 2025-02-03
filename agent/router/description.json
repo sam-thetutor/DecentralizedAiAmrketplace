@@ -1,0 +1,17 @@
+{
+    "name": "General Agent",
+    "description": {
+        "expertise": "I am a general agent that can route your request to the appropriate agents.",
+        "input": {
+            "type": "string",
+            "description": "A request that you would like to be routed to the appropriate agent."
+        },
+        "output": {
+            "type": "string",
+            "description": "The result of the request."
+        }
+        
+    },
+    "reputation": 1,
+    "isRouter":true
+}

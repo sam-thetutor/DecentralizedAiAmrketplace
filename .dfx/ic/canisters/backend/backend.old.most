@@ -1,0 +1,22 @@
+// Version: 1.0.0
+type Agent = {Price : Nat; metadata : AgentDescription; reputation : Nat};
+type AgentDescription =
+  {
+    description :
+      {
+        expertise : Text;
+        input : {_type : Text; description : Text};
+        output : {_type : Text; description : Text}
+      }
+  };
+type Response = {callbackId : Nat; from : Principal; output : Text};
+type Task =
+  {callbackId : Nat; from : Principal; prompt : Text; to : Principal};
+actor {
+  stable var Owner : Principal;
+  stable var balanceArray : [(Principal, Nat)];
+  stable var currentTaskId : Nat;
+  stable var metadataArray : [(Principal, Agent)];
+  stable var responsesArray : [(Nat, Response)];
+  stable var tasksArray : [(Nat, Task)]
+};

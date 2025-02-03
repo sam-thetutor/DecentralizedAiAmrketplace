@@ -1,0 +1,35 @@
+type Agent = record {
+  metadata : AgentDescription;
+  Price : nat;
+  reputation : nat;
+};
+type AgentDescription = record {
+  description : record {
+    output : record { _type : text; description : text };
+    expertise : text;
+    input : record { _type : text; description : text };
+  };
+};
+type Backend = service {
+  assignTaskToAgent : (nat, principal) -> (Result);
+  getAgentPrice : (principal) -> (nat) query;
+  getAllAgentsData : () -> (vec record { principal; Agent }) query;
+  getCurrentTaskId : () -> (nat) query;
+  getTask : (nat) -> (opt Task) query;
+  getTaskAgent : (nat) -> (opt principal) query;
+  queryAgent : (text, principal, nat) -> (Result_1);
+  registerAgent : (principal, AgentDescription, nat) -> (Result);
+  respond : (text, nat) -> (Result);
+  setAgentPrice : (nat) -> (Result);
+  updateAgent : (AgentDescription) -> (Result);
+  updateBalance : (nat) -> (Result);
+};
+type Result = variant { ok : text; err : text };
+type Result_1 = variant { ok : nat; err : text };
+type Task = record {
+  to : principal;
+  callbackId : nat;
+  from : principal;
+  prompt : text;
+};
+service : Backend

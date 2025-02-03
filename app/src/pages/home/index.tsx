@@ -1,6 +1,4 @@
 import {
-  clearAppEndpoint,
-  clearJWT,
   getAccessToken,
   getAppEndpointKey,
   getRefreshToken,
@@ -29,7 +27,6 @@ import {
 } from '../../api/clientApi';
 import { getContextId, getStorageApplicationId } from '../../utils/node';
 import {
-  clearApplicationId,
   getJWTObject,
   getStorageExecutorPublicKey,
 } from '../../utils/storage';
@@ -46,6 +43,8 @@ import CreateProposalPopup, {
   ProposalData,
 } from '../../components/proposals/CreateProposalPopup';
 import Actions from '../../components/proposal/Actions';
+import Navbar from '../../components/Navbar';
+import AgentList from '../../components/agents/AgentList';
 
 const FullPageCenter = styled.div`
   display: flex;
@@ -89,18 +88,6 @@ const ButtonSm = styled.button`
   display: flex;
   border: none;
   outline: none;
-`;
-
-const LogoutButton = styled.div`
-  color: black;
-  margin-top: 2rem;
-  padding: 0.25em 1em;
-  border-radius: 8px;
-  font-size: 1em;
-  background: white;
-  cursor: pointer;
-  justify-content: center;
-  display: flex;
 `;
 
 const ProposalsWrapper = styled.div`
@@ -531,13 +518,6 @@ export default function HomePage() {
     }
   };
 
-  const logout = () => {
-    clearAppEndpoint();
-    clearJWT();
-    clearApplicationId();
-    navigate('/auth');
-  };
-
   // Add this helper function to check if current user is the author
   const isCurrentUserAuthor = (proposal: ContractProposal): boolean => {
     const currentUserKey = getJWTObject()?.executor_public_key;
@@ -545,149 +525,14 @@ export default function HomePage() {
   };
 
   return (
-    <FullPageCenter>
-      <TextStyle>
-        <span>Blockchain proposals demo application</span>
-      </TextStyle>
-      <ContextVariablesContainer>
-        <div className="flex-container">
-          <ButtonSm onClick={() => getContextVariables()}>
-            Get Context Variables
-          </ButtonSm>
-        </div>
-        <div className="flex-container context-variables">
-          <h3 className="title">Context variables:</h3>
-          {contextVariables.length > 0 ? (
-            <div>
-              <StyledTable>
-                <thead>
-                  <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contextVariables.map((variable) => (
-                    <tr key={variable.key}>
-                      <td>{variable.key}</td>
-                      <td>{variable.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </StyledTable>
-            </div>
-          ) : (
-            <div>No context variables</div>
-          )}
-        </div>
-      </ContextVariablesContainer>
-      <div> Proposals </div>
-
-      <Button
-        onClick={() => setIsModalOpen(true)}
-        disabled={createProposalLoading}
-      >
-        {createProposalLoading ? 'Loading...' : 'Create new proposal'}
-      </Button>
-
-      {isModalOpen && (
-        <CreateProposalPopup
-          setIsModalOpen={setIsModalOpen}
-          createProposal={createProposal}
-        />
-      )}
-      <ProposalsWrapper>
-        <div className="flex-container proposal-data">
-          <h3 className="title">Number of proposals:</h3>
-          <span>{proposalCount}</span>
-        </div>
-        <select
-          value={selectedProposal ? selectedProposal.id : 'Select Proposal'}
-          onChange={(e) =>
-            setSelectedProposal(proposals.find((p) => p.id === e.target.value))
-          }
-          className="select-dropdown"
-        >
-          <option value="">Select a proposal</option>
-          {proposals &&
-            proposals.map((proposal) => (
-              <option key={proposal.id} value={proposal.id}>
-                {proposal.id}
-              </option>
-            ))}
-        </select>
-        {selectedProposal && (
-          <div className="proposal-data">
-            <div className="flex-container">
-              <h3 className="title">Proposal ID:</h3>
-              <span>{selectedProposal.id}</span>
-            </div>
-            <div className="flex-container">
-              <h3 className="title">Author ID:</h3>
-              <span>{selectedProposal.author_id}</span>
-            </div>
-            <div className="flex-container">
-              <h3 className="title">Number of approvals:</h3>
-              <span>{selectedProposalApprovals}</span>
-            </div>
-            <div className="">
-              <h3 className="title">Approvers:</h3>
-              {approvers.length !== 0 ? (
-                approvers.map((a, i) => (
-                  <>
-                    <br />
-                    <span key={a}>
-                      {i + 1}. {a}
-                    </span>
-                  </>
-                ))
-              ) : (
-                <span>No approvers</span>
-              )}
-            </div>
-            <h3 className="title actions-title">Actions</h3>
-            <Actions actions={selectedProposal.actions} />
-            <div className="flex-container center">
-              <ButtonSm onClick={() => approveProposal(selectedProposal.id)}>
-                {approveProposalLoading ? 'Loading...' : 'Approve proposal'}
-              </ButtonSm>
-              <ButtonSm
-                onClick={() => {
-                  fetchProposalMessages(selectedProposal.id);
-                }}
-              >
-                Get Messages
-              </ButtonSm>
-              <ButtonSm
-                onClick={() => {
-                  sendProposalMessage({
-                    proposal_id: selectedProposal.id,
-                    message: {
-                      id: 'test' + Math.random(),
-                      proposal_id: selectedProposal.id,
-                      author: getJWTObject()?.executor_public_key,
-                      text: 'test' + Math.random(),
-                      created_at: new Date().toISOString(),
-                    },
-                  } as SendProposalMessageRequest);
-                }}
-              >
-                Send Message
-              </ButtonSm>
-              {isCurrentUserAuthor(selectedProposal) && (
-                <ButtonSm
-                  onClick={() => {
-                    deleteProposal(selectedProposal.id);
-                  }}
-                >
-                  Delete Proposal
-                </ButtonSm>
-              )}
-            </div>
-          </div>
-        )}
-      </ProposalsWrapper>
-      <LogoutButton onClick={logout}>Logout</LogoutButton>
-    </FullPageCenter>
+    <>
+      <Navbar />
+      <FullPageCenter>
+        <TextStyle>
+          <span>Available Agents</span>
+        </TextStyle>
+        <AgentList />
+      </FullPageCenter>
+    </>
   );
 }

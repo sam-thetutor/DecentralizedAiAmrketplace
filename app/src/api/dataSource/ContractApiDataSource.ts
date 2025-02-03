@@ -8,9 +8,10 @@ import {
   ContractProposal,
   Members,
 } from '../contractApi';
-import { getStorageAppEndpointKey } from '../../utils/storage';
+import { getJWTObject, getStorageAppEndpointKey } from '../../utils/storage';
 import axios from 'axios';
 import { getConfigAndJwt } from './LogicApiDataSource';
+import bs58 from 'bs58';
 
 export interface GetProposalsRequest {
   offset: number;
@@ -22,28 +23,32 @@ export class ContextApiDataSource implements ContractApi {
     request: GetProposalsRequest,
   ): ApiResponse<ContractProposal[]> {
     try {
-      const { jwtObject, error } = getConfigAndJwt();
-      if (error) {
-        return { error };
+      const token = getJWTObject();
+      if (!token) {
+        return { 
+          error: new Error('No JWT token found'),
+          data: null 
+        };
       }
 
-      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals`;
-      const body = request;
-
-      const response = await axios.post(apiEndpoint, body, {
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${token.context_id}/proposals`;
+      
+      const response = await axios.post(apiEndpoint, request, {
         headers: {
           'Content-Type': 'application/json',
-        },
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       return {
-        data: response.data ?? [],
-        error: null,
+        data: response.data,
+        error: null
       };
     } catch (error) {
+      console.error('Fetch Proposals Error:', error);
       return {
         data: null,
-        error: error as Error,
+        error: error as Error
       };
     }
   }
@@ -153,5 +158,67 @@ export class ContextApiDataSource implements ContractApi {
   }
   getContextMembersCount(): ApiResponse<number> {
     throw new Error('Method not implemented.');
+  }
+
+  async approveProposal(proposalId: string): ApiResponse<void> {
+    try {
+      const { jwtObject, error } = getConfigAndJwt();
+      if (error) {
+        return { error };
+      }
+
+      // Convert proposalId from base58 to hex format
+      const bytes = bs58.decode(proposalId);
+      const proposalIdHex = Buffer.from(bytes).toString('hex');
+      console.log("jwtObject", jwtObject, proposalIdHex);
+
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/${proposalIdHex}`;
+      console.log("apiEndpoint to approve proposal :", apiEndpoint);
+      await axios.post(apiEndpoint, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtObject.context_id}`
+        }
+      });
+
+      return {
+        data: undefined,
+        error: null
+      };
+    } catch (error) {
+      console.error('Vote Error:', error);
+      return {
+        data: null,
+        error: error as Error
+      };
+    }
+  }
+
+  async getContextDetails(contextId: string): ApiResponse<ContextDetails> {
+    throw new Error('Method not implemented.');
+  }
+
+
+
+//delete proposal
+
+  async deleteProposal(proposalId: string): ApiResponse<void> {
+    try {
+      const { jwtObject, error } = getConfigAndJwt();
+      const token = getJWTObject();
+      if (error) return { error };
+      
+      const apiEndpoint = `${getStorageAppEndpointKey()}/admin-api/contexts/${jwtObject.context_id}/proposals/${proposalId}`;
+      
+      console.log("apiEndpoint to delete proposal :", apiEndpoint);
+      await axios.delete(apiEndpoint, {
+        headers: {
+          // 'Authorization': `Bearer ${token}`
+        }
+      });
+      return { data: undefined, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
   }
 }

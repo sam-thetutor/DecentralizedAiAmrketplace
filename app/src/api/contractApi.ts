@@ -18,7 +18,11 @@ export interface ProposalAction {
 export interface ContractProposal {
   id: string;
   author_id: string;
-  actions: ProposalAction[];
+  actions: {
+    action_type: string;
+    params: any;
+  }[];
+  // Add any other fields that come from the API
 }
 
 //
@@ -44,6 +48,11 @@ export interface ContextVariables {
   value: string;
 }
 
+export interface ApiResponse<T> {
+  data: T | null;
+  error: Error | null;
+}
+
 export interface ContractApi {
   //Contract
   getContractProposals(
@@ -55,30 +64,9 @@ export interface ContractApi {
   getContextMembers(): ApiResponse<Members[]>;
   getContextMembersCount(): ApiResponse<number>;
   deleteProposal(proposalId: string): ApiResponse<void>;
+  approveProposal(proposalId: string): ApiResponse<void>;
 }
 
-// async removeProposal(proposalId: String): ApiResponse<boolean> {
-//   return await this.client.delete<boolean>(
-//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}`,
-//   );
-// }
 
-// async getProposalMessage(
-//   proposalId: String,
-//   messageId: String,
-// ): ApiResponse<Message> {
-//   return await this.client.get<Message>(
-//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/messages/${messageId}`,
-//   );
-// }
 
-// async getProposalMessages(proposalId: String): ApiResponse<Message[]> {
-//   return await this.client.get<Message[]>(
-//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/messages`,
-//   );
-// }
-// async approveProposal(proposalId: String): ApiResponse<boolean> {
-//   return await this.client.post<boolean>(
-//     `${this.endpoint}/admin-api/contexts/${this.contextId}/proposals/${proposalId}/vote`,
-//   );
-// }
+

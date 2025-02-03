@@ -4,5 +4,9 @@
 	},
 	"devDependencies": {
 		"husky": "^9.0.11"
+	},
+	"dependencies": {
+		"@dfinity/agent": "^2.2.0",
+		"@dfinity/principal": "^2.2.0"
 	}
 }

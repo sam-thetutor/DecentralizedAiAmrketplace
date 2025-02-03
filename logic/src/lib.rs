@@ -86,41 +86,8 @@ impl AppState {
                     )
                     .send()
             }
-            "Transfer" => {
-                env::log("Processing Transfer");
-                let receiver_id = request.params["receiver_id"]
-                    .as_str()
-                    .ok_or_else(|| Error::msg("receiver_id is required"))?;
-                let amount = request.params["amount"]
-                    .as_str()
-                    .ok_or_else(|| Error::msg("amount is required"))?
-                    .parse::<u128>()?;
-
-                Self::external()
-                    .propose()
-                    .transfer(AccountId(receiver_id.to_string()), amount)
-                    .send()
-            }
-            "SetContextValue" => {
-                env::log("Processing SetContextValue");
-                let key = request.params["key"]
-                    .as_str()
-                    .ok_or_else(|| Error::msg("key is required"))?
-                    .as_bytes()
-                    .to_vec()
-                    .into_boxed_slice();
-                let value = request.params["value"]
-                    .as_str()
-                    .ok_or_else(|| Error::msg("value is required"))?
-                    .as_bytes()
-                    .to_vec()
-                    .into_boxed_slice();
-
-                Self::external()
-                    .propose()
-                    .set_context_value(key, value)
-                    .send()
-            }
+            
+           
             "SetNumApprovals" => Self::external()
                 .propose()
                 .set_num_approvals(
@@ -168,7 +135,6 @@ impl AppState {
         // self.messages
         //     .get(&proposal_id)?
         //     .ok_or(Error::msg("proposal not found"))?;
-
         Self::external().approve(proposal_id);
 
         env::emit(&Event::ApprovedProposal { id: proposal_id });

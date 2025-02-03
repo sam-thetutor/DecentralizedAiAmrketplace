@@ -27,19 +27,13 @@ export interface SendProposalMessageResponse {}
 
 export enum ProposalActionType {
   ExternalFunctionCall = 'ExternalFunctionCall',
-  Transfer = 'Transfer',
   SetNumApprovals = 'SetNumApprovals',
-  SetActiveProposalsLimit = 'SetActiveProposalsLimit',
-  SetContextValue = 'SetContextValue',
   DeleteProposal = 'DeleteProposal',
 }
 
 export type FormActionType =
   | 'Cross contract call'
-  | 'Transfer'
-  | 'Set context variable'
   | 'Change number of approvals needed'
-  | 'Change number of maximum active proposals';
 
 export interface ExternalFunctionCallAction {
   type: ProposalActionType.ExternalFunctionCall;
@@ -50,10 +44,6 @@ export interface ExternalFunctionCallAction {
   gas?: string;
 }
 
-export interface TransferAction {
-  type: ProposalActionType.Transfer;
-  amount: string;
-}
 
 export interface CreateProposalRequest {
   action_type: string;
@@ -78,6 +68,7 @@ export interface CreateProposalResponse {
 
 export interface ApproveProposalRequest {
   proposal_id: string;
+  
 }
 
 export interface ApproveProposalResponse {}

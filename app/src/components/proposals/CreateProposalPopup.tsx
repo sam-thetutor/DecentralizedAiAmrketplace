@@ -27,10 +27,33 @@ const ModalContent = styled.div`
   width: 90%;
   max-width: 500px;
   color: white;
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 
   h2 {
     padding-bottom: 0.5rem;
     margin: 0;
+    position: sticky;
+    top: 0;
+    background: #1e1e1e;
+    z-index: 1;
   }
 `;
 
@@ -87,19 +110,17 @@ export interface ProposalData {
   maxActiveProposals: string;
 }
 
-interface CreateProposalPopupProps {
-  setIsModalOpen: (isModalOpen: boolean) => void;
-  createProposal: (proposalForm: ProposalData) => Promise<void>;
+export interface CreateProposalPopupProps {
+  onClose: () => void;
+  onSuccess: (proposalForm: ProposalData) => Promise<void>;
 }
 
-export default function CreateProposalPopup({
-  setIsModalOpen,
-  createProposal,
-}: CreateProposalPopupProps) {
+
+export default function CreateProposalPopup({ onClose, onSuccess }: CreateProposalPopupProps) {
   const [proposalForm, setProposalForm] = useState({
     actionType: 'Cross contract call',
-    contractId: '',
-    methodName: '',
+    contractId: 'b77ix-eeaaa-aaaaa-qaada-cai',
+    methodName: 'Add New AI Model',
     arguments: [{ key: '', value: '' }],
     deposit: '',
     receiverId: '',
@@ -107,6 +128,10 @@ export default function CreateProposalPopup({
     contextVariables: [{ key: '', value: '' }],
     minApprovals: '',
     maxActiveProposals: '',
+    inputType: '',
+    inputDescription: '',
+    outputType: '',
+    outputDescription: '',
   });
 
   const handleInputChange = (
@@ -188,9 +213,8 @@ export default function CreateProposalPopup({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsModalOpen(false);
-    await createProposal(proposalForm);
-
+    await onSuccess(proposalForm);
+    onClose();
     setProposalForm({
       actionType: 'Cross contract call',
       contractId: '',
@@ -202,11 +226,15 @@ export default function CreateProposalPopup({
       contextVariables: [{ key: '', value: '' }],
       minApprovals: '',
       maxActiveProposals: '',
+      inputType: '',
+      inputDescription: '',
+      outputType: '',
+      outputDescription: '',
     });
   };
 
   return (
-    <ModalOverlay onClick={() => setIsModalOpen(false)}>
+    <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <h2>Create New Proposal</h2>
         <form onSubmit={handleSubmit}>
@@ -257,7 +285,7 @@ export default function CreateProposalPopup({
           <ButtonGroup>
             <ButtonSm
               type="button"
-              onClick={() => setIsModalOpen(false)}
+              onClick={onClose}
               style={{ background: '#666' }}
             >
               Cancel
